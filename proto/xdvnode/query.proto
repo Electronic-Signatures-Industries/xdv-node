@@ -4,12 +4,40 @@ package ElectronicSignaturesIndustries.xdvnode.xdvnode;
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
+import "xdvnode/documents.proto";
 
 option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types";
 
 // Query defines the gRPC querier service.
 service Query {
     // this line is used by starport scaffolding # 2
+
+	// Queries a documents by id.
+	rpc Documents(QueryGetDocumentsRequest) returns (QueryGetDocumentsResponse) {
+		option (google.api.http).get = "/Electronic-Signatures-Industries/xdvnode/xdvnode/documents/{id}";
+	}
+
+	// Queries a list of documents items.
+	rpc DocumentsAll(QueryAllDocumentsRequest) returns (QueryAllDocumentsResponse) {
+		option (google.api.http).get = "/Electronic-Signatures-Industries/xdvnode/xdvnode/documents";
+	}
+
 }
 
 // this line is used by starport scaffolding # 3
+message QueryGetDocumentsRequest {
+	uint64 id = 1;
+}
+
+message QueryGetDocumentsResponse {
+	Documents Documents = 1;
+}
+
+message QueryAllDocumentsRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDocumentsResponse {
+	repeated Documents Documents = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
