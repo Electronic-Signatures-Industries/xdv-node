@@ -4,6 +4,15 @@ export declare const protobufPackage = "ElectronicSignaturesIndustries.xdvnode.x
 export interface MsgCreateDocuments {
     creator: string;
     name: string;
+    hash: string;
+    lastModified: number;
+    contentType: string;
+    signature: string;
+    network: string;
+    did: string;
+    alg: string;
+    pinned: boolean;
+    tokenized: boolean;
 }
 export interface MsgCreateDocumentsResponse {
     id: number;

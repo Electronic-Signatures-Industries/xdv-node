@@ -24,9 +24,18 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Documents struct {
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	Name    string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Creator      string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Id           uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	Name         string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Hash         string `protobuf:"bytes,4,opt,name=hash,proto3" json:"hash,omitempty"`
+	LastModified uint64 `protobuf:"varint,5,opt,name=last_modified,json=lastModified,proto3" json:"last_modified,omitempty"`
+	ContentType  string `protobuf:"bytes,6,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
+	Signature    string `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature,omitempty"`
+	Network      string `protobuf:"bytes,8,opt,name=network,proto3" json:"network,omitempty"`
+	Did          string `protobuf:"bytes,9,opt,name=did,proto3" json:"did,omitempty"`
+	Alg          string `protobuf:"bytes,10,opt,name=alg,proto3" json:"alg,omitempty"`
+	Pinned       bool   `protobuf:"varint,11,opt,name=pinned,proto3" json:"pinned,omitempty"`
+	Tokenized    bool   `protobuf:"varint,12,opt,name=tokenized,proto3" json:"tokenized,omitempty"`
 }
 
 func (m *Documents) Reset()         { *m = Documents{} }
@@ -83,6 +92,69 @@ func (m *Documents) GetName() string {
 	return ""
 }
 
+func (m *Documents) GetHash() string {
+	if m != nil {
+		return m.Hash
+	}
+	return ""
+}
+
+func (m *Documents) GetLastModified() uint64 {
+	if m != nil {
+		return m.LastModified
+	}
+	return 0
+}
+
+func (m *Documents) GetContentType() string {
+	if m != nil {
+		return m.ContentType
+	}
+	return ""
+}
+
+func (m *Documents) GetSignature() string {
+	if m != nil {
+		return m.Signature
+	}
+	return ""
+}
+
+func (m *Documents) GetNetwork() string {
+	if m != nil {
+		return m.Network
+	}
+	return ""
+}
+
+func (m *Documents) GetDid() string {
+	if m != nil {
+		return m.Did
+	}
+	return ""
+}
+
+func (m *Documents) GetAlg() string {
+	if m != nil {
+		return m.Alg
+	}
+	return ""
+}
+
+func (m *Documents) GetPinned() bool {
+	if m != nil {
+		return m.Pinned
+	}
+	return false
+}
+
+func (m *Documents) GetTokenized() bool {
+	if m != nil {
+		return m.Tokenized
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*Documents)(nil), "ElectronicSignaturesIndustries.xdvnode.xdvnode.Documents")
 }
@@ -90,22 +162,30 @@ func init() {
 func init() { proto.RegisterFile("xdvnode/documents.proto", fileDescriptor_9acd19b8810ea64d) }
 
 var fileDescriptor_9acd19b8810ea64d = []byte{
-	// 226 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xaf, 0x48, 0x29, 0xcb,
-	0xcb, 0x4f, 0x49, 0xd5, 0x4f, 0xc9, 0x4f, 0x2e, 0xcd, 0x4d, 0xcd, 0x2b, 0x29, 0xd6, 0x2b, 0x28,
-	0xca, 0x2f, 0xc9, 0x17, 0xd2, 0x73, 0xcd, 0x49, 0x4d, 0x2e, 0x29, 0xca, 0xcf, 0xcb, 0x4c, 0x0e,
-	0xce, 0x4c, 0xcf, 0x4b, 0x2c, 0x29, 0x2d, 0x4a, 0x2d, 0xf6, 0xcc, 0x4b, 0x29, 0x2d, 0x2e, 0x29,
-	0xca, 0x4c, 0x2d, 0xd6, 0x83, 0xea, 0x83, 0xd1, 0x52, 0x22, 0xe9, 0xf9, 0xe9, 0xf9, 0x60, 0xad,
-	0xfa, 0x20, 0x16, 0xc4, 0x14, 0x25, 0x4f, 0x2e, 0x4e, 0x17, 0x98, 0xc1, 0x42, 0x12, 0x5c, 0xec,
-	0xc9, 0x45, 0xa9, 0x89, 0x25, 0xf9, 0x45, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41, 0x30, 0xae,
-	0x10, 0x1f, 0x17, 0x53, 0x66, 0x8a, 0x04, 0x93, 0x02, 0xa3, 0x06, 0x4b, 0x10, 0x53, 0x66, 0x8a,
-	0x90, 0x10, 0x17, 0x4b, 0x5e, 0x62, 0x6e, 0xaa, 0x04, 0x33, 0x58, 0x19, 0x98, 0xed, 0x14, 0x77,
-	0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7,
-	0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x2e, 0xe9, 0x99, 0x25, 0x19, 0xa5,
-	0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x08, 0x57, 0xeb, 0x22, 0x9c, 0xad, 0x8b, 0x70, 0xb7, 0x7e,
-	0x45, 0x4a, 0x99, 0x2e, 0xd8, 0xc3, 0x15, 0xfa, 0x30, 0xaf, 0x97, 0x54, 0x16, 0xa4, 0x16, 0x27,
-	0xb1, 0x81, 0x5d, 0x6c, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x2a, 0xfb, 0xc7, 0x56, 0x12, 0x01,
-	0x00, 0x00,
+	// 355 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x44, 0x91, 0x31, 0x4e, 0xc3, 0x30,
+	0x14, 0x86, 0x9b, 0xb4, 0xb4, 0x8d, 0x5b, 0x10, 0xb2, 0x10, 0x58, 0x08, 0x45, 0x05, 0x96, 0x2e,
+	0x4d, 0x06, 0x6e, 0x80, 0xca, 0xc0, 0xc0, 0x52, 0x98, 0x18, 0xa8, 0xd2, 0xf8, 0x91, 0x5a, 0x4d,
+	0xec, 0xc8, 0x76, 0x4a, 0xcb, 0x29, 0xb8, 0x0d, 0x57, 0x60, 0xec, 0xc8, 0x88, 0xda, 0x8b, 0x20,
+	0x3b, 0x89, 0x32, 0xe5, 0x7f, 0xdf, 0xcb, 0xfb, 0xfd, 0xec, 0x1f, 0x5d, 0x6c, 0xe8, 0x9a, 0x0b,
+	0x0a, 0x21, 0x15, 0x71, 0x91, 0x01, 0xd7, 0x2a, 0xc8, 0xa5, 0xd0, 0x02, 0x07, 0x0f, 0x29, 0xc4,
+	0x5a, 0x0a, 0xce, 0xe2, 0x67, 0x96, 0xf0, 0x48, 0x17, 0x12, 0xd4, 0x23, 0xa7, 0x85, 0xd2, 0x92,
+	0x81, 0x0a, 0xaa, 0xb9, 0xfa, 0x7b, 0x79, 0x96, 0x88, 0x44, 0xd8, 0xd1, 0xd0, 0xa8, 0xd2, 0xe5,
+	0xe6, 0xdb, 0x45, 0xde, 0xb4, 0x76, 0xc6, 0x04, 0xf5, 0x62, 0x09, 0x91, 0x16, 0x92, 0x38, 0x23,
+	0x67, 0xec, 0xcd, 0xea, 0x12, 0x9f, 0x20, 0x97, 0x51, 0xe2, 0x8e, 0x9c, 0x71, 0x67, 0xe6, 0x32,
+	0x8a, 0x31, 0xea, 0xf0, 0x28, 0x03, 0xd2, 0xb6, 0xbf, 0x59, 0x6d, 0xd8, 0x32, 0x52, 0x4b, 0xd2,
+	0x29, 0x99, 0xd1, 0xf8, 0x16, 0x1d, 0xa7, 0x91, 0xd2, 0xf3, 0x4c, 0x50, 0xf6, 0xce, 0x80, 0x92,
+	0x23, 0x6b, 0x31, 0x34, 0xf0, 0xa9, 0x62, 0xf8, 0x1a, 0x0d, 0x63, 0xc1, 0x35, 0x70, 0x3d, 0xd7,
+	0xdb, 0x1c, 0x48, 0xd7, 0x1a, 0x0c, 0x2a, 0xf6, 0xb2, 0xcd, 0x01, 0x5f, 0x21, 0x4f, 0xd5, 0xb7,
+	0x24, 0x3d, 0xdb, 0x6f, 0x80, 0xd9, 0x9b, 0x83, 0xfe, 0x10, 0x72, 0x45, 0xfa, 0xe5, 0xde, 0x55,
+	0x89, 0x4f, 0x51, 0x9b, 0x32, 0x4a, 0x3c, 0x4b, 0x8d, 0x34, 0x24, 0x4a, 0x13, 0x82, 0x4a, 0x12,
+	0xa5, 0x09, 0x3e, 0x47, 0xdd, 0x9c, 0x71, 0x0e, 0x94, 0x0c, 0x46, 0xce, 0xb8, 0x3f, 0xab, 0x2a,
+	0x73, 0xa6, 0x16, 0x2b, 0xe0, 0xec, 0x13, 0x28, 0x19, 0xda, 0x56, 0x03, 0xee, 0xdf, 0x7e, 0xf6,
+	0xbe, 0xb3, 0xdb, 0xfb, 0xce, 0xdf, 0xde, 0x77, 0xbe, 0x0e, 0x7e, 0x6b, 0x77, 0xf0, 0x5b, 0xbf,
+	0x07, 0xbf, 0xf5, 0x3a, 0x4d, 0x98, 0x5e, 0x16, 0x8b, 0x20, 0x16, 0x59, 0xd8, 0x84, 0x34, 0x69,
+	0x52, 0x9a, 0x34, 0x31, 0x85, 0x1b, 0xba, 0x9e, 0xd8, 0x7c, 0x37, 0x61, 0x9d, 0xb4, 0x79, 0x03,
+	0xb5, 0xe8, 0xda, 0x80, 0xee, 0xfe, 0x03, 0x00, 0x00, 0xff, 0xff, 0x95, 0xf8, 0xdb, 0x42, 0x01,
+	0x02, 0x00, 0x00,
 }
 
 func (m *Documents) Marshal() (dAtA []byte, err error) {
@@ -128,6 +208,73 @@ func (m *Documents) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Tokenized {
+		i--
+		if m.Tokenized {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.Pinned {
+		i--
+		if m.Pinned {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x58
+	}
+	if len(m.Alg) > 0 {
+		i -= len(m.Alg)
+		copy(dAtA[i:], m.Alg)
+		i = encodeVarintDocuments(dAtA, i, uint64(len(m.Alg)))
+		i--
+		dAtA[i] = 0x52
+	}
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintDocuments(dAtA, i, uint64(len(m.Did)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.Network) > 0 {
+		i -= len(m.Network)
+		copy(dAtA[i:], m.Network)
+		i = encodeVarintDocuments(dAtA, i, uint64(len(m.Network)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Signature) > 0 {
+		i -= len(m.Signature)
+		copy(dAtA[i:], m.Signature)
+		i = encodeVarintDocuments(dAtA, i, uint64(len(m.Signature)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.ContentType) > 0 {
+		i -= len(m.ContentType)
+		copy(dAtA[i:], m.ContentType)
+		i = encodeVarintDocuments(dAtA, i, uint64(len(m.ContentType)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.LastModified != 0 {
+		i = encodeVarintDocuments(dAtA, i, uint64(m.LastModified))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Hash) > 0 {
+		i -= len(m.Hash)
+		copy(dAtA[i:], m.Hash)
+		i = encodeVarintDocuments(dAtA, i, uint64(len(m.Hash)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
@@ -177,6 +324,39 @@ func (m *Documents) Size() (n int) {
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovDocuments(uint64(l))
+	}
+	l = len(m.Hash)
+	if l > 0 {
+		n += 1 + l + sovDocuments(uint64(l))
+	}
+	if m.LastModified != 0 {
+		n += 1 + sovDocuments(uint64(m.LastModified))
+	}
+	l = len(m.ContentType)
+	if l > 0 {
+		n += 1 + l + sovDocuments(uint64(l))
+	}
+	l = len(m.Signature)
+	if l > 0 {
+		n += 1 + l + sovDocuments(uint64(l))
+	}
+	l = len(m.Network)
+	if l > 0 {
+		n += 1 + l + sovDocuments(uint64(l))
+	}
+	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovDocuments(uint64(l))
+	}
+	l = len(m.Alg)
+	if l > 0 {
+		n += 1 + l + sovDocuments(uint64(l))
+	}
+	if m.Pinned {
+		n += 2
+	}
+	if m.Tokenized {
+		n += 2
 	}
 	return n
 }
@@ -299,6 +479,257 @@ func (m *Documents) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastModified", wireType)
+			}
+			m.LastModified = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastModified |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContentType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContentType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signature = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Network", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Network = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alg", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDocuments
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alg = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pinned", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Pinned = bool(v != 0)
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tokenized", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDocuments
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Tokenized = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDocuments(dAtA[iNdEx:])

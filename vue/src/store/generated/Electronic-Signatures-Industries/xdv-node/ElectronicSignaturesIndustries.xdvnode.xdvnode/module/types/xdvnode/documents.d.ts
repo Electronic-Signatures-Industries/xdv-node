@@ -4,6 +4,15 @@ export interface Documents {
     creator: string;
     id: number;
     name: string;
+    hash: string;
+    lastModified: number;
+    contentType: string;
+    signature: string;
+    network: string;
+    did: string;
+    alg: string;
+    pinned: boolean;
+    tokenized: boolean;
 }
 export declare const Documents: {
     encode(message: Documents, writer?: Writer): Writer;

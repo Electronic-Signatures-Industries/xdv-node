@@ -9,4 +9,13 @@ message Documents {
   string creator = 1;
   uint64 id = 2;
   string name = 3; 
+  string hash = 4;
+  uint64 last_modified = 5;
+  string content_type = 6;
+  string signature = 7;
+  string network = 8;
+  string did = 9;
+  string alg = 10;
+  bool pinned = 11;
+  bool tokenized = 12;
 }

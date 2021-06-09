@@ -15,6 +15,7 @@ func (k msgServer) CreateDocuments(goCtx context.Context, msg *types.MsgCreateDo
 	var documents = types.Documents{
 		Creator: msg.Creator,
 		Name:    msg.Name,
+		Hash:    msg.Hash,
 	}
 
 	id := k.AppendDocuments(

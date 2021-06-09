@@ -12750,6 +12750,25 @@ paths:
                       format: uint64
                     name:
                       type: string
+                    hash:
+                      type: string
+                    lastModified:
+                      type: string
+                      format: uint64
+                    contentType:
+                      type: string
+                    signature:
+                      type: string
+                    network:
+                      type: string
+                    did:
+                      type: string
+                    alg:
+                      type: string
+                    pinned:
+                      type: boolean
+                    tokenized:
+                      type: boolean
               pagination:
                 type: object
                 properties:
@@ -12866,6 +12885,25 @@ paths:
                     format: uint64
                   name:
                     type: string
+                  hash:
+                    type: string
+                  lastModified:
+                    type: string
+                    format: uint64
+                  contentType:
+                    type: string
+                  signature:
+                    type: string
+                  network:
+                    type: string
+                  did:
+                    type: string
+                  alg:
+                    type: string
+                  pinned:
+                    type: boolean
+                  tokenized:
+                    type: boolean
         default:
           description: An unexpected error response.
           schema:
@@ -28877,6 +28915,25 @@ definitions:
         format: uint64
       name:
         type: string
+      hash:
+        type: string
+      lastModified:
+        type: string
+        format: uint64
+      contentType:
+        type: string
+      signature:
+        type: string
+      network:
+        type: string
+      did:
+        type: string
+      alg:
+        type: string
+      pinned:
+        type: boolean
+      tokenized:
+        type: boolean
   ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocumentsResponse:
     type: object
     properties:
@@ -28902,6 +28959,25 @@ definitions:
               format: uint64
             name:
               type: string
+            hash:
+              type: string
+            lastModified:
+              type: string
+              format: uint64
+            contentType:
+              type: string
+            signature:
+              type: string
+            network:
+              type: string
+            did:
+              type: string
+            alg:
+              type: string
+            pinned:
+              type: boolean
+            tokenized:
+              type: boolean
       pagination:
         type: object
         properties:
@@ -28940,6 +29016,25 @@ definitions:
             format: uint64
           name:
             type: string
+          hash:
+            type: string
+          lastModified:
+            type: string
+            format: uint64
+          contentType:
+            type: string
+          signature:
+            type: string
+          network:
+            type: string
+          did:
+            type: string
+          alg:
+            type: string
+          pinned:
+            type: boolean
+          tokenized:
+            type: boolean
   ibc.applications.transfer.v1.DenomTrace:
     type: object
     properties:

@@ -8,9 +8,31 @@ export interface Documents {
   creator: string
   id: number
   name: string
+  hash: string
+  lastModified: number
+  contentType: string
+  signature: string
+  network: string
+  did: string
+  alg: string
+  pinned: boolean
+  tokenized: boolean
 }
 
-const baseDocuments: object = { creator: '', id: 0, name: '' }
+const baseDocuments: object = {
+  creator: '',
+  id: 0,
+  name: '',
+  hash: '',
+  lastModified: 0,
+  contentType: '',
+  signature: '',
+  network: '',
+  did: '',
+  alg: '',
+  pinned: false,
+  tokenized: false
+}
 
 export const Documents = {
   encode(message: Documents, writer: Writer = Writer.create()): Writer {
@@ -22,6 +44,33 @@ export const Documents = {
     }
     if (message.name !== '') {
       writer.uint32(26).string(message.name)
+    }
+    if (message.hash !== '') {
+      writer.uint32(34).string(message.hash)
+    }
+    if (message.lastModified !== 0) {
+      writer.uint32(40).uint64(message.lastModified)
+    }
+    if (message.contentType !== '') {
+      writer.uint32(50).string(message.contentType)
+    }
+    if (message.signature !== '') {
+      writer.uint32(58).string(message.signature)
+    }
+    if (message.network !== '') {
+      writer.uint32(66).string(message.network)
+    }
+    if (message.did !== '') {
+      writer.uint32(74).string(message.did)
+    }
+    if (message.alg !== '') {
+      writer.uint32(82).string(message.alg)
+    }
+    if (message.pinned === true) {
+      writer.uint32(88).bool(message.pinned)
+    }
+    if (message.tokenized === true) {
+      writer.uint32(96).bool(message.tokenized)
     }
     return writer
   },
@@ -41,6 +90,33 @@ export const Documents = {
           break
         case 3:
           message.name = reader.string()
+          break
+        case 4:
+          message.hash = reader.string()
+          break
+        case 5:
+          message.lastModified = longToNumber(reader.uint64() as Long)
+          break
+        case 6:
+          message.contentType = reader.string()
+          break
+        case 7:
+          message.signature = reader.string()
+          break
+        case 8:
+          message.network = reader.string()
+          break
+        case 9:
+          message.did = reader.string()
+          break
+        case 10:
+          message.alg = reader.string()
+          break
+        case 11:
+          message.pinned = reader.bool()
+          break
+        case 12:
+          message.tokenized = reader.bool()
           break
         default:
           reader.skipType(tag & 7)
@@ -67,6 +143,51 @@ export const Documents = {
     } else {
       message.name = ''
     }
+    if (object.hash !== undefined && object.hash !== null) {
+      message.hash = String(object.hash)
+    } else {
+      message.hash = ''
+    }
+    if (object.lastModified !== undefined && object.lastModified !== null) {
+      message.lastModified = Number(object.lastModified)
+    } else {
+      message.lastModified = 0
+    }
+    if (object.contentType !== undefined && object.contentType !== null) {
+      message.contentType = String(object.contentType)
+    } else {
+      message.contentType = ''
+    }
+    if (object.signature !== undefined && object.signature !== null) {
+      message.signature = String(object.signature)
+    } else {
+      message.signature = ''
+    }
+    if (object.network !== undefined && object.network !== null) {
+      message.network = String(object.network)
+    } else {
+      message.network = ''
+    }
+    if (object.did !== undefined && object.did !== null) {
+      message.did = String(object.did)
+    } else {
+      message.did = ''
+    }
+    if (object.alg !== undefined && object.alg !== null) {
+      message.alg = String(object.alg)
+    } else {
+      message.alg = ''
+    }
+    if (object.pinned !== undefined && object.pinned !== null) {
+      message.pinned = Boolean(object.pinned)
+    } else {
+      message.pinned = false
+    }
+    if (object.tokenized !== undefined && object.tokenized !== null) {
+      message.tokenized = Boolean(object.tokenized)
+    } else {
+      message.tokenized = false
+    }
     return message
   },
 
@@ -75,6 +196,15 @@ export const Documents = {
     message.creator !== undefined && (obj.creator = message.creator)
     message.id !== undefined && (obj.id = message.id)
     message.name !== undefined && (obj.name = message.name)
+    message.hash !== undefined && (obj.hash = message.hash)
+    message.lastModified !== undefined && (obj.lastModified = message.lastModified)
+    message.contentType !== undefined && (obj.contentType = message.contentType)
+    message.signature !== undefined && (obj.signature = message.signature)
+    message.network !== undefined && (obj.network = message.network)
+    message.did !== undefined && (obj.did = message.did)
+    message.alg !== undefined && (obj.alg = message.alg)
+    message.pinned !== undefined && (obj.pinned = message.pinned)
+    message.tokenized !== undefined && (obj.tokenized = message.tokenized)
     return obj
   },
 
@@ -94,6 +224,51 @@ export const Documents = {
       message.name = object.name
     } else {
       message.name = ''
+    }
+    if (object.hash !== undefined && object.hash !== null) {
+      message.hash = object.hash
+    } else {
+      message.hash = ''
+    }
+    if (object.lastModified !== undefined && object.lastModified !== null) {
+      message.lastModified = object.lastModified
+    } else {
+      message.lastModified = 0
+    }
+    if (object.contentType !== undefined && object.contentType !== null) {
+      message.contentType = object.contentType
+    } else {
+      message.contentType = ''
+    }
+    if (object.signature !== undefined && object.signature !== null) {
+      message.signature = object.signature
+    } else {
+      message.signature = ''
+    }
+    if (object.network !== undefined && object.network !== null) {
+      message.network = object.network
+    } else {
+      message.network = ''
+    }
+    if (object.did !== undefined && object.did !== null) {
+      message.did = object.did
+    } else {
+      message.did = ''
+    }
+    if (object.alg !== undefined && object.alg !== null) {
+      message.alg = object.alg
+    } else {
+      message.alg = ''
+    }
+    if (object.pinned !== undefined && object.pinned !== null) {
+      message.pinned = object.pinned
+    } else {
+      message.pinned = false
+    }
+    if (object.tokenized !== undefined && object.tokenized !== null) {
+      message.tokenized = object.tokenized
+    } else {
+      message.tokenized = false
     }
     return message
   }
