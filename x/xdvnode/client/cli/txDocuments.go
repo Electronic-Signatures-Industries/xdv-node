@@ -15,9 +15,9 @@ import (
 
 func CmdCreateDocuments() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-documents [name] [hash]",
+		Use:   "create-documents [name] [hash] [last_modified]",
 		Short: "Create a new documents",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			argsName, err := cast.ToStringE(args[0])
 			if err != nil {
@@ -27,13 +27,19 @@ func CmdCreateDocuments() *cobra.Command {
 			if err != nil {
 				return err
 			}
+			argsLastModified, err := cast.ToUint64E(args[2])
+			if err != nil {
+				return err
+			}
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgCreateDocuments(clientCtx.GetFromAddress().String(), argsName,
-				argsHash)
+			msg := types.NewMsgCreateDocuments(
+				clientCtx.GetFromAddress().String(), argsName,
+				argsHash,
+				argsLastModified)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

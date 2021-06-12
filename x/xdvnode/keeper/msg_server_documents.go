@@ -13,9 +13,10 @@ func (k msgServer) CreateDocuments(goCtx context.Context, msg *types.MsgCreateDo
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var documents = types.Documents{
-		Creator: msg.Creator,
-		Name:    msg.Name,
-		Hash:    msg.Hash,
+		Creator:      msg.Creator,
+		Name:         msg.Name,
+		Hash:         msg.Hash,
+		LastModified: msg.LastModified,
 	}
 
 	id := k.AppendDocuments(

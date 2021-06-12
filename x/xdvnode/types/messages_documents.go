@@ -7,11 +7,13 @@ import (
 
 var _ sdk.Msg = &MsgCreateDocuments{}
 
-func NewMsgCreateDocuments(creator string, name string, hash string) *MsgCreateDocuments {
+func NewMsgCreateDocuments(creator string, name string, hash string,
+	lastModified uint64) *MsgCreateDocuments {
 	return &MsgCreateDocuments{
-		Creator: creator,
-		Name:    name,
-		Hash:    hash,
+		Creator:      creator,
+		Name:         name,
+		Hash:         hash,
+		LastModified: lastModified,
 	}
 }
 
