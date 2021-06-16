@@ -64,6 +64,13 @@ func (k Keeper) SetDocumentsCount(ctx sdk.Context, count uint64) {
 	store.Set(byteKey, bz)
 }
 
+// Any Dapp
+// js client (kind: XDV)   ---> IPLD message (REST/gRPC) ---> IPLD Aware IP with Custom Storage
+// js client (kind: IPFS)   ---> IPLD message (REST/gRPC) ---> IPLD Aware IP with IPFS Storage
+// js client (kind: Swarm)   ---> IPLD message (REST/gRPC) ---> IPLD Aware IP with Swarm Storage
+// { ...message, parent: { link: xdvCid }, sibling: { link: ipfsCid } }
+// NFT, FE, Firmas, VC, DID, Smart Agreements, GDPR, SSI
+
 func (k Keeper) AppendIPLD(
 	ctx sdk.Context,
 	documents types.Documents,
