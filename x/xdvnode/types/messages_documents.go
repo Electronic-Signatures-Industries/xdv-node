@@ -8,12 +8,21 @@ import (
 var _ sdk.Msg = &MsgCreateDocuments{}
 
 func NewMsgCreateDocuments(creator string, name string, hash string,
-	lastModified uint64) *MsgCreateDocuments {
+	lastModified uint64, contentType string,
+	signature string, network string, did string,
+	alg string, pinned bool, tokenized bool) *MsgCreateDocuments {
 	return &MsgCreateDocuments{
 		Creator:      creator,
 		Name:         name,
 		Hash:         hash,
 		LastModified: lastModified,
+		ContentType:  contentType,
+		Signature:    signature,
+		Network:      network,
+		Did:          did,
+		Alg:          alg,
+		Pinned:       pinned,
+		Tokenized:    tokenized,
 	}
 }
 

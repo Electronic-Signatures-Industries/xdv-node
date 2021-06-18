@@ -13,7 +13,6 @@ import (
 	"github.com/ipfs/go-cid"
 
 	"github.com/ipld/go-ipld-prime"
-	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/fluent"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
@@ -87,37 +86,30 @@ func (k Keeper) AppendIPLD(
 	//  so let's get the default LinkSystem that's ready to work with those.
 	lsys := cidlink.DefaultLinkSystem()
 
-	// We want to store the serialized data somewhere.
-	//  We'll use an in-memory store for this.  (It's a package scoped variable.)
-	//  You can use any kind of storage system here;
 	//   you just need a function that conforms to the ipld.BlockWriteOpener interface.
 	lsys.StorageWriteOpener = func(lnkCtx ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
 		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DocumentsKey))
 		buf := bytes.Buffer{}
-		// TODO: Here
 		return &buf, func(lnk ipld.Link) error {
-			dagcbor.Encode(lnkCtx.LinkNode, &buf)
-			// appendedValue := k.cdc.MustMarshalBinaryBare(buf.)
-			store.Set(GetDocumentsIDBytes(documents.Id), buf.Bytes())
+			node, _ := lnkCtx.LinkNode.AsBytes()
+			store.Set(GetDocumentsIDBytes(documents.Id), node)
 			return nil
 		}, nil
 	}
 
-	// if (isSwarm) {
-	// 	mhtype := 0xfa
-	// }
-	lp := cidlink.LinkPrototype{cid.Prefix{
-		Version:  1,    // Usually '1'.
-		Codec:    0x71, // 0x71 means "dag-cbor" -- See the multicodecs table: https://github.com/multiformats/multicodec/
-		MhType:   0x13, // 0x20 means "sha2-512" -- See the multicodecs table: https://github.com/multiformats/multicodec/
-		MhLength: 64,   // sha2-512 hash has a 64-byte sum.
-	}}
-
 	// Add Document
 	// Basic Node
 	n := fluent.MustBuildMap(basicnode.Prototype.Map, 1, func(na fluent.MapAssembler) {
-		na.AssembleEntry("index").AssignString(documents.GetHash())
+		appendedValue := k.cdc.MustMarshalJSON(&documents)
+		na.AssembleEntry("index").AssignBytes(appendedValue)
 	})
+
+	lp := cidlink.LinkPrototype{cid.Prefix{
+		Version:  1,
+		Codec:    0x71, // dag-cbor
+		MhType:   0x13, // sha2-512
+		MhLength: 64,   // sha2-512 hash has a 64-byte sum.
+	}}
 
 	lnk, err := lsys.Store(
 		ipld.LinkContext{}, // The zero value is fine.  Configure it it you want cancellability or other features.
