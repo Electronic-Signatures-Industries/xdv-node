@@ -13,6 +13,7 @@ import (
 	"github.com/ipfs/go-cid"
 
 	"github.com/ipld/go-ipld-prime"
+	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/ipld/go-ipld-prime/fluent"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
@@ -92,12 +93,12 @@ func (k Keeper) AppendIPLD(
 	//   you just need a function that conforms to the ipld.BlockWriteOpener interface.
 	lsys.StorageWriteOpener = func(lnkCtx ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
 		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DocumentsKey))
-
-		// TODO: Here
 		buf := bytes.Buffer{}
+		// TODO: Here
 		return &buf, func(lnk ipld.Link) error {
-			appendedValue := k.cdc.MustMarshalBinaryBare(&documents)
-			store.Set(GetDocumentsIDBytes(documents.Id), appendedValue)
+			dagcbor.Encode(lnkCtx.LinkNode, &buf)
+			// appendedValue := k.cdc.MustMarshalBinaryBare(buf.)
+			store.Set(GetDocumentsIDBytes(documents.Id), buf.Bytes())
 			return nil
 		}, nil
 	}
@@ -113,6 +114,7 @@ func (k Keeper) AppendIPLD(
 	}}
 
 	// Add Document
+	// Basic Node
 	n := fluent.MustBuildMap(basicnode.Prototype.Map, 1, func(na fluent.MapAssembler) {
 		na.AssembleEntry("index").AssignString(documents.GetHash())
 	})
