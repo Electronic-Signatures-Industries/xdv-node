@@ -74,7 +74,7 @@ func (k Keeper) SetDocumentsCount(ctx sdk.Context, count uint64) {
 func (k Keeper) AppendIPLD(
 	ctx sdk.Context,
 	documents types.Documents,
-) ipld.Link {
+) (ipld.Link, uint64) {
 
 	// Create the documents
 	count := k.GetDocumentsCount(ctx)
@@ -88,11 +88,11 @@ func (k Keeper) AppendIPLD(
 
 	//   you just need a function that conforms to the ipld.BlockWriteOpener interface.
 	lsys.StorageWriteOpener = func(lnkCtx ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
+		// change prefix
 		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DocumentsKey))
 		buf := bytes.Buffer{}
 		return &buf, func(lnk ipld.Link) error {
-			node, _ := lnkCtx.LinkNode.AsBytes()
-			store.Set(GetDocumentsIDBytes(documents.Id), node)
+			store.Set([]byte(lnk.String()), buf.Bytes())
 			return nil
 		}, nil
 	}
@@ -123,7 +123,7 @@ func (k Keeper) AppendIPLD(
 	// Update documents count
 	k.SetDocumentsCount(ctx, count+1)
 
-	return lnk
+	return lnk, count
 }
 
 // AppendDocuments appends a documents in the store with a new id and update the count
