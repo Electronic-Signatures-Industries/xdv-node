@@ -40,6 +40,31 @@ func CmdCreateDocuments() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			argsNetwork, err := cast.ToStringE(args[5])
+			if err != nil {
+				return err
+			}
+
+			argsDid, err := cast.ToStringE(args[6])
+			if err != nil {
+				return err
+			}
+
+			argsAlg, err := cast.ToStringE(args[7])
+			if err != nil {
+				return err
+			}
+
+			argsPinned, err := cast.ToBoolE(args[8])
+			if err != nil {
+				return err
+			}
+
+			argsTokenized, err := cast.ToBoolE(args[9])
+			if err != nil {
+				return err
+			}
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
