@@ -9,7 +9,7 @@
 - **Document Anchoring**
 - **Files with IPLD API**
 - **Support for XDV, IPFS, Swarm Storage**
-- **SA Transaction validation / signing**
+- **RSA Transaction validation / signing**
 - **"Smart Data Contracts"**: Code IPLD Schemas, merkle proof verifiable, which can be NFT tokenized, or any linked data format
 - **Data Subscriptions**: Subscribe IPLD Queries to oracles to execute jobs or actions
 - **Supports DID and Verified Credentials**
