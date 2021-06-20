@@ -2,6 +2,7 @@ syntax = "proto3";
 package ElectronicSignaturesIndustries.xdvnode.xdvnode;
 
 // this line is used by starport scaffolding # proto/tx/import
+import "xdvnode/file.proto";
 import "xdvnode/documents.proto";
 
 option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types";
@@ -9,12 +10,24 @@ option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvn
 // Msg defines the Msg service.
 service Msg {
     // this line is used by starport scaffolding # proto/tx/rpc
+  rpc CreateFile(MsgCreateFile) returns (MsgCreateFileResponse);
   rpc CreateDocuments(MsgCreateDocuments) returns (MsgCreateDocumentsResponse);
   rpc UpdateDocuments(MsgUpdateDocuments) returns (MsgUpdateDocumentsResponse);
   rpc DeleteDocuments(MsgDeleteDocuments) returns (MsgDeleteDocumentsResponse);
 }
 
 // this line is used by starport scaffolding # proto/tx/message
+message MsgCreateFile {
+  string creator = 1;
+  bytes data = 2;
+  string content_type = 3;
+}
+
+message MsgCreateFileResponse {
+  string cid = 1;
+}
+
+
 message MsgCreateDocuments {
   string creator = 1;
   string name = 2;
@@ -27,7 +40,7 @@ message MsgCreateDocuments {
   string alg = 10;
   bool pinned = 11;
   bool tokenized = 12;
-
+  string metadataURI = 13;
 }
 
 message MsgCreateDocumentsResponse {

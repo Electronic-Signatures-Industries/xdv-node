@@ -14,7 +14,8 @@ const baseDocuments = {
     did: '',
     alg: '',
     pinned: false,
-    tokenized: false
+    tokenized: false,
+    metadataURI: ''
 };
 export const Documents = {
     encode(message, writer = Writer.create()) {
@@ -53,6 +54,9 @@ export const Documents = {
         }
         if (message.tokenized === true) {
             writer.uint32(96).bool(message.tokenized);
+        }
+        if (message.metadataURI !== '') {
+            writer.uint32(106).string(message.metadataURI);
         }
         return writer;
     },
@@ -98,6 +102,9 @@ export const Documents = {
                     break;
                 case 12:
                     message.tokenized = reader.bool();
+                    break;
+                case 13:
+                    message.metadataURI = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -180,6 +187,12 @@ export const Documents = {
         else {
             message.tokenized = false;
         }
+        if (object.metadataURI !== undefined && object.metadataURI !== null) {
+            message.metadataURI = String(object.metadataURI);
+        }
+        else {
+            message.metadataURI = '';
+        }
         return message;
     },
     toJSON(message) {
@@ -196,6 +209,7 @@ export const Documents = {
         message.alg !== undefined && (obj.alg = message.alg);
         message.pinned !== undefined && (obj.pinned = message.pinned);
         message.tokenized !== undefined && (obj.tokenized = message.tokenized);
+        message.metadataURI !== undefined && (obj.metadataURI = message.metadataURI);
         return obj;
     },
     fromPartial(object) {
@@ -271,6 +285,12 @@ export const Documents = {
         }
         else {
             message.tokenized = false;
+        }
+        if (object.metadataURI !== undefined && object.metadataURI !== null) {
+            message.metadataURI = object.metadataURI;
+        }
+        else {
+            message.metadataURI = '';
         }
         return message;
     }

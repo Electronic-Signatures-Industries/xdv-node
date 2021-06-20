@@ -9,6 +9,8 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	// this line is used by starport scaffolding # 2
+	cdc.RegisterConcrete(&MsgCreateFile{}, "xdvnode/CreateFile", nil)
+
 	cdc.RegisterConcrete(&MsgCreateDocuments{}, "xdvnode/CreateDocuments", nil)
 	cdc.RegisterConcrete(&MsgUpdateDocuments{}, "xdvnode/UpdateDocuments", nil)
 	cdc.RegisterConcrete(&MsgDeleteDocuments{}, "xdvnode/DeleteDocuments", nil)
@@ -17,6 +19,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	// this line is used by starport scaffolding # 3
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateFile{},
+	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateDocuments{},
 		&MsgUpdateDocuments{},

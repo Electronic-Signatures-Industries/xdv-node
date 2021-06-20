@@ -1,0 +1,13 @@
+syntax = "proto3";
+package ElectronicSignaturesIndustries.xdvnode.xdvnode;
+
+option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types";
+
+import "gogoproto/gogo.proto";
+
+message File {
+  string creator = 1;
+  uint64 id = 2;
+  bytes data = 3; 
+  string content_type = 4; 
+}

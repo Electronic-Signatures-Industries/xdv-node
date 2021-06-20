@@ -1,6 +1,14 @@
 import { Reader, Writer } from 'protobufjs/minimal';
 export declare const protobufPackage = "ElectronicSignaturesIndustries.xdvnode.xdvnode";
 /** this line is used by starport scaffolding # proto/tx/message */
+export interface MsgCreateFile {
+    creator: string;
+    data: Uint8Array;
+    contentType: string;
+}
+export interface MsgCreateFileResponse {
+    cid: string;
+}
 export interface MsgCreateDocuments {
     creator: string;
     name: string;
@@ -13,6 +21,7 @@ export interface MsgCreateDocuments {
     alg: string;
     pinned: boolean;
     tokenized: boolean;
+    metadataURI: string;
 }
 export interface MsgCreateDocumentsResponse {
     id: number;
@@ -30,6 +39,20 @@ export interface MsgDeleteDocuments {
 }
 export interface MsgDeleteDocumentsResponse {
 }
+export declare const MsgCreateFile: {
+    encode(message: MsgCreateFile, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgCreateFile;
+    fromJSON(object: any): MsgCreateFile;
+    toJSON(message: MsgCreateFile): unknown;
+    fromPartial(object: DeepPartial<MsgCreateFile>): MsgCreateFile;
+};
+export declare const MsgCreateFileResponse: {
+    encode(message: MsgCreateFileResponse, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgCreateFileResponse;
+    fromJSON(object: any): MsgCreateFileResponse;
+    toJSON(message: MsgCreateFileResponse): unknown;
+    fromPartial(object: DeepPartial<MsgCreateFileResponse>): MsgCreateFileResponse;
+};
 export declare const MsgCreateDocuments: {
     encode(message: MsgCreateDocuments, writer?: Writer): Writer;
     decode(input: Reader | Uint8Array, length?: number): MsgCreateDocuments;
@@ -75,6 +98,7 @@ export declare const MsgDeleteDocumentsResponse: {
 /** Msg defines the Msg service. */
 export interface Msg {
     /** this line is used by starport scaffolding # proto/tx/rpc */
+    CreateFile(request: MsgCreateFile): Promise<MsgCreateFileResponse>;
     CreateDocuments(request: MsgCreateDocuments): Promise<MsgCreateDocumentsResponse>;
     UpdateDocuments(request: MsgUpdateDocuments): Promise<MsgUpdateDocumentsResponse>;
     DeleteDocuments(request: MsgDeleteDocuments): Promise<MsgDeleteDocumentsResponse>;
@@ -82,6 +106,7 @@ export interface Msg {
 export declare class MsgClientImpl implements Msg {
     private readonly rpc;
     constructor(rpc: Rpc);
+    CreateFile(request: MsgCreateFile): Promise<MsgCreateFileResponse>;
     CreateDocuments(request: MsgCreateDocuments): Promise<MsgCreateDocumentsResponse>;
     UpdateDocuments(request: MsgUpdateDocuments): Promise<MsgUpdateDocumentsResponse>;
     DeleteDocuments(request: MsgDeleteDocuments): Promise<MsgDeleteDocumentsResponse>;

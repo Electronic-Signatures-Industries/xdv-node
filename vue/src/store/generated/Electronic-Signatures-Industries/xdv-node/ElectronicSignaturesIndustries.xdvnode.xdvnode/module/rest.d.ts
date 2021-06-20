@@ -74,10 +74,22 @@ export interface XdvnodeDocuments {
     alg?: string;
     pinned?: boolean;
     tokenized?: boolean;
+    metadataURI?: string;
+}
+export interface XdvnodeFile {
+    creator?: string;
+    /** @format uint64 */
+    id?: string;
+    /** @format byte */
+    data?: string;
+    contentType?: string;
 }
 export interface XdvnodeMsgCreateDocumentsResponse {
     /** @format uint64 */
     id?: string;
+}
+export interface XdvnodeMsgCreateFileResponse {
+    cid?: string;
 }
 export declare type XdvnodeMsgDeleteDocumentsResponse = object;
 export declare type XdvnodeMsgUpdateDocumentsResponse = object;
@@ -94,8 +106,24 @@ export interface XdvnodeQueryAllDocumentsResponse {
      */
     pagination?: V1Beta1PageResponse;
 }
+export interface XdvnodeQueryAllFileResponse {
+    File?: XdvnodeFile[];
+    /**
+     * PageResponse is to be embedded in gRPC response messages where the
+     * corresponding request message has used PageRequest.
+     *
+     *  message SomeResponse {
+     *          repeated Bar results = 1;
+     *          PageResponse page = 2;
+     *  }
+     */
+    pagination?: V1Beta1PageResponse;
+}
 export interface XdvnodeQueryGetDocumentsResponse {
     Documents?: XdvnodeDocuments;
+}
+export interface XdvnodeQueryGetFileResponse {
+    File?: XdvnodeFile;
 }
 export declare type QueryParamsType = Record<string | number, any>;
 export declare type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
@@ -178,5 +206,28 @@ export declare class Api<SecurityDataType extends unknown> extends HttpClient<Se
      * @request GET:/Electronic-Signatures-Industries/xdvnode/xdvnode/documents/{id}
      */
     queryDocuments: (id: string, params?: RequestParams) => Promise<HttpResponse<XdvnodeQueryGetDocumentsResponse, RpcStatus>>;
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryFileAll
+     * @summary Queries a list of file items.
+     * @request GET:/Electronic-Signatures-Industries/xdvnode/xdvnode/file
+     */
+    queryFileAll: (query?: {
+        "pagination.key"?: string;
+        "pagination.offset"?: string;
+        "pagination.limit"?: string;
+        "pagination.countTotal"?: boolean;
+    }, params?: RequestParams) => Promise<HttpResponse<XdvnodeQueryAllFileResponse, RpcStatus>>;
+    /**
+     * No description
+     *
+     * @tags Query
+     * @name QueryFile
+     * @summary Queries a file by id.
+     * @request GET:/Electronic-Signatures-Industries/xdvnode/xdvnode/file/{cid}
+     */
+    queryFile: (cid: string, params?: RequestParams) => Promise<HttpResponse<XdvnodeQueryGetFileResponse, RpcStatus>>;
 }
 export {};

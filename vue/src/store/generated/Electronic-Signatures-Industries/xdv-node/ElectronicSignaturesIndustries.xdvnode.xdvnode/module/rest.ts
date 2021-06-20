@@ -96,11 +96,27 @@ export interface XdvnodeDocuments {
   alg?: string;
   pinned?: boolean;
   tokenized?: boolean;
+  metadataURI?: string;
+}
+
+export interface XdvnodeFile {
+  creator?: string;
+
+  /** @format uint64 */
+  id?: string;
+
+  /** @format byte */
+  data?: string;
+  contentType?: string;
 }
 
 export interface XdvnodeMsgCreateDocumentsResponse {
   /** @format uint64 */
   id?: string;
+}
+
+export interface XdvnodeMsgCreateFileResponse {
+  cid?: string;
 }
 
 export type XdvnodeMsgDeleteDocumentsResponse = object;
@@ -122,8 +138,27 @@ export interface XdvnodeQueryAllDocumentsResponse {
   pagination?: V1Beta1PageResponse;
 }
 
+export interface XdvnodeQueryAllFileResponse {
+  File?: XdvnodeFile[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface XdvnodeQueryGetDocumentsResponse {
   Documents?: XdvnodeDocuments;
+}
+
+export interface XdvnodeQueryGetFileResponse {
+  File?: XdvnodeFile;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -358,6 +393,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryDocuments = (id: string, params: RequestParams = {}) =>
     this.request<XdvnodeQueryGetDocumentsResponse, RpcStatus>({
       path: `/Electronic-Signatures-Industries/xdvnode/xdvnode/documents/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryFileAll
+   * @summary Queries a list of file items.
+   * @request GET:/Electronic-Signatures-Industries/xdvnode/xdvnode/file
+   */
+  queryFileAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.countTotal"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<XdvnodeQueryAllFileResponse, RpcStatus>({
+      path: `/Electronic-Signatures-Industries/xdvnode/xdvnode/file`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryFile
+   * @summary Queries a file by id.
+   * @request GET:/Electronic-Signatures-Industries/xdvnode/xdvnode/file/{cid}
+   */
+  queryFile = (cid: string, params: RequestParams = {}) =>
+    this.request<XdvnodeQueryGetFileResponse, RpcStatus>({
+      path: `/Electronic-Signatures-Industries/xdvnode/xdvnode/file/${cid}`,
       method: "GET",
       format: "json",
       ...params,

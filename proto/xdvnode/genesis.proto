@@ -2,6 +2,7 @@ syntax = "proto3";
 package ElectronicSignaturesIndustries.xdvnode.xdvnode;
 
 // this line is used by starport scaffolding # genesis/proto/import
+import "xdvnode/file.proto";
 import "xdvnode/documents.proto";
 
 option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types";
@@ -9,6 +10,8 @@ option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvn
 // GenesisState defines the xdvnode module's genesis state.
 message GenesisState {
     // this line is used by starport scaffolding # genesis/proto/state
+		repeated File fileList = 3; // this line is used by starport scaffolding # genesis/proto/stateField
+		uint64 fileCount = 4; // this line is used by starport scaffolding # genesis/proto/stateField
 		repeated Documents documentsList = 1; // this line is used by starport scaffolding # genesis/proto/stateField
 		uint64 documentsCount = 2; // this line is used by starport scaffolding # genesis/proto/stateField
     // this line is used by starport scaffolding # ibc/genesis/proto

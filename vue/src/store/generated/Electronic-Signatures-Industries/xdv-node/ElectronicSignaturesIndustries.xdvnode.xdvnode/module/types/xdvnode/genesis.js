@@ -1,11 +1,18 @@
 /* eslint-disable */
 import * as Long from 'long';
 import { util, configure, Writer, Reader } from 'protobufjs/minimal';
+import { File } from '../xdvnode/file';
 import { Documents } from '../xdvnode/documents';
 export const protobufPackage = 'ElectronicSignaturesIndustries.xdvnode.xdvnode';
-const baseGenesisState = { documentsCount: 0 };
+const baseGenesisState = { fileCount: 0, documentsCount: 0 };
 export const GenesisState = {
     encode(message, writer = Writer.create()) {
+        for (const v of message.fileList) {
+            File.encode(v, writer.uint32(26).fork()).ldelim();
+        }
+        if (message.fileCount !== 0) {
+            writer.uint32(32).uint64(message.fileCount);
+        }
         for (const v of message.documentsList) {
             Documents.encode(v, writer.uint32(10).fork()).ldelim();
         }
@@ -18,10 +25,17 @@ export const GenesisState = {
         const reader = input instanceof Uint8Array ? new Reader(input) : input;
         let end = length === undefined ? reader.len : reader.pos + length;
         const message = { ...baseGenesisState };
+        message.fileList = [];
         message.documentsList = [];
         while (reader.pos < end) {
             const tag = reader.uint32();
             switch (tag >>> 3) {
+                case 3:
+                    message.fileList.push(File.decode(reader, reader.uint32()));
+                    break;
+                case 4:
+                    message.fileCount = longToNumber(reader.uint64());
+                    break;
                 case 1:
                     message.documentsList.push(Documents.decode(reader, reader.uint32()));
                     break;
@@ -37,7 +51,19 @@ export const GenesisState = {
     },
     fromJSON(object) {
         const message = { ...baseGenesisState };
+        message.fileList = [];
         message.documentsList = [];
+        if (object.fileList !== undefined && object.fileList !== null) {
+            for (const e of object.fileList) {
+                message.fileList.push(File.fromJSON(e));
+            }
+        }
+        if (object.fileCount !== undefined && object.fileCount !== null) {
+            message.fileCount = Number(object.fileCount);
+        }
+        else {
+            message.fileCount = 0;
+        }
         if (object.documentsList !== undefined && object.documentsList !== null) {
             for (const e of object.documentsList) {
                 message.documentsList.push(Documents.fromJSON(e));
@@ -53,6 +79,13 @@ export const GenesisState = {
     },
     toJSON(message) {
         const obj = {};
+        if (message.fileList) {
+            obj.fileList = message.fileList.map((e) => (e ? File.toJSON(e) : undefined));
+        }
+        else {
+            obj.fileList = [];
+        }
+        message.fileCount !== undefined && (obj.fileCount = message.fileCount);
         if (message.documentsList) {
             obj.documentsList = message.documentsList.map((e) => (e ? Documents.toJSON(e) : undefined));
         }
@@ -64,7 +97,19 @@ export const GenesisState = {
     },
     fromPartial(object) {
         const message = { ...baseGenesisState };
+        message.fileList = [];
         message.documentsList = [];
+        if (object.fileList !== undefined && object.fileList !== null) {
+            for (const e of object.fileList) {
+                message.fileList.push(File.fromPartial(e));
+            }
+        }
+        if (object.fileCount !== undefined && object.fileCount !== null) {
+            message.fileCount = object.fileCount;
+        }
+        else {
+            message.fileCount = 0;
+        }
         if (object.documentsList !== undefined && object.documentsList !== null) {
             for (const e of object.documentsList) {
                 message.documentsList.push(Documents.fromPartial(e));

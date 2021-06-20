@@ -4,6 +4,7 @@ package ElectronicSignaturesIndustries.xdvnode.xdvnode;
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
+import "xdvnode/file.proto";
 import "xdvnode/documents.proto";
 
 option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types";
@@ -11,6 +12,17 @@ option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvn
 // Query defines the gRPC querier service.
 service Query {
     // this line is used by starport scaffolding # 2
+
+	// Queries a file by id.
+	rpc File(QueryGetFileRequest) returns (QueryGetFileResponse) {
+		option (google.api.http).get = "/Electronic-Signatures-Industries/xdvnode/xdvnode/file/{cid}";
+	}
+
+	// Queries a list of file items.
+	rpc FileAll(QueryAllFileRequest) returns (QueryAllFileResponse) {
+		option (google.api.http).get = "/Electronic-Signatures-Industries/xdvnode/xdvnode/file";
+	}
+
 
 	// Queries a documents by id.
 	rpc Documents(QueryGetDocumentsRequest) returns (QueryGetDocumentsResponse) {
@@ -25,6 +37,22 @@ service Query {
 }
 
 // this line is used by starport scaffolding # 3
+message QueryGetFileRequest {
+	string cid = 1;
+}
+
+message QueryGetFileResponse {
+	File File = 1;
+}
+
+message QueryAllFileRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllFileResponse {
+	repeated File File = 1;
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
 message QueryGetDocumentsRequest {
 	uint64 id = 1;
 }

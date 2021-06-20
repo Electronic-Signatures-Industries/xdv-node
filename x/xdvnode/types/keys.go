@@ -29,3 +29,8 @@ const (
 	DocumentsKey      = "Documents-value-"
 	DocumentsCountKey = "Documents-count-"
 )
+
+const (
+	FileKey      = "File-value-"
+	FileCountKey = "File-count-"
+)

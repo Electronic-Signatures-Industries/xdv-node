@@ -20,4 +20,5 @@ message Documents {
   string alg = 10;
   bool pinned = 11;
   bool tokenized = 12;
+  string metadataURI = 13;
 }

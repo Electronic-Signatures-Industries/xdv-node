@@ -10,6 +10,14 @@ import (
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
+	// Set all the file
+	for _, elem := range genState.FileList {
+		k.SetFile(ctx, *elem)
+	}
+
+	// Set file count
+	k.SetFileCount(ctx, genState.FileCount)
+
 	// Set all the documents
 	for _, elem := range genState.DocumentsList {
 		k.SetDocuments(ctx, *elem)
@@ -26,6 +34,16 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 
 	// this line is used by starport scaffolding # genesis/module/export
+	// Get all file
+	fileList := k.GetAllFile(ctx)
+	for _, elem := range fileList {
+		elem := elem
+		genesis.FileList = append(genesis.FileList, &elem)
+	}
+
+	// Set the current count
+	genesis.FileCount = k.GetFileCount(ctx)
+
 	// Get all documents
 	documentsList := k.GetAllDocuments(ctx)
 	for _, elem := range documentsList {

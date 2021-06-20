@@ -1,9 +1,14 @@
 import { Writer, Reader } from 'protobufjs/minimal';
+import { File } from '../xdvnode/file';
 import { Documents } from '../xdvnode/documents';
 export declare const protobufPackage = "ElectronicSignaturesIndustries.xdvnode.xdvnode";
 /** GenesisState defines the xdvnode module's genesis state. */
 export interface GenesisState {
     /** this line is used by starport scaffolding # genesis/proto/state */
+    fileList: File[];
+    /** this line is used by starport scaffolding # genesis/proto/stateField */
+    fileCount: number;
+    /** this line is used by starport scaffolding # genesis/proto/stateField */
     documentsList: Documents[];
     /** this line is used by starport scaffolding # genesis/proto/stateField */
     documentsCount: number;

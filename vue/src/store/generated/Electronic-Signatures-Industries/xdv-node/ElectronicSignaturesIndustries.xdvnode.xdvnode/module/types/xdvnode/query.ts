@@ -1,12 +1,30 @@
 /* eslint-disable */
 import { Reader, util, configure, Writer } from 'protobufjs/minimal'
 import * as Long from 'long'
-import { Documents } from '../xdvnode/documents'
+import { File } from '../xdvnode/file'
 import { PageRequest, PageResponse } from '../cosmos/base/query/v1beta1/pagination'
+import { Documents } from '../xdvnode/documents'
 
 export const protobufPackage = 'ElectronicSignaturesIndustries.xdvnode.xdvnode'
 
 /** this line is used by starport scaffolding # 3 */
+export interface QueryGetFileRequest {
+  cid: string
+}
+
+export interface QueryGetFileResponse {
+  File: File | undefined
+}
+
+export interface QueryAllFileRequest {
+  pagination: PageRequest | undefined
+}
+
+export interface QueryAllFileResponse {
+  File: File[]
+  pagination: PageResponse | undefined
+}
+
 export interface QueryGetDocumentsRequest {
   id: number
 }
@@ -22,6 +40,250 @@ export interface QueryAllDocumentsRequest {
 export interface QueryAllDocumentsResponse {
   Documents: Documents[]
   pagination: PageResponse | undefined
+}
+
+const baseQueryGetFileRequest: object = { cid: '' }
+
+export const QueryGetFileRequest = {
+  encode(message: QueryGetFileRequest, writer: Writer = Writer.create()): Writer {
+    if (message.cid !== '') {
+      writer.uint32(10).string(message.cid)
+    }
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryGetFileRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryGetFileRequest } as QueryGetFileRequest
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.cid = reader.string()
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryGetFileRequest {
+    const message = { ...baseQueryGetFileRequest } as QueryGetFileRequest
+    if (object.cid !== undefined && object.cid !== null) {
+      message.cid = String(object.cid)
+    } else {
+      message.cid = ''
+    }
+    return message
+  },
+
+  toJSON(message: QueryGetFileRequest): unknown {
+    const obj: any = {}
+    message.cid !== undefined && (obj.cid = message.cid)
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryGetFileRequest>): QueryGetFileRequest {
+    const message = { ...baseQueryGetFileRequest } as QueryGetFileRequest
+    if (object.cid !== undefined && object.cid !== null) {
+      message.cid = object.cid
+    } else {
+      message.cid = ''
+    }
+    return message
+  }
+}
+
+const baseQueryGetFileResponse: object = {}
+
+export const QueryGetFileResponse = {
+  encode(message: QueryGetFileResponse, writer: Writer = Writer.create()): Writer {
+    if (message.File !== undefined) {
+      File.encode(message.File, writer.uint32(10).fork()).ldelim()
+    }
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryGetFileResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryGetFileResponse } as QueryGetFileResponse
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.File = File.decode(reader, reader.uint32())
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryGetFileResponse {
+    const message = { ...baseQueryGetFileResponse } as QueryGetFileResponse
+    if (object.File !== undefined && object.File !== null) {
+      message.File = File.fromJSON(object.File)
+    } else {
+      message.File = undefined
+    }
+    return message
+  },
+
+  toJSON(message: QueryGetFileResponse): unknown {
+    const obj: any = {}
+    message.File !== undefined && (obj.File = message.File ? File.toJSON(message.File) : undefined)
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryGetFileResponse>): QueryGetFileResponse {
+    const message = { ...baseQueryGetFileResponse } as QueryGetFileResponse
+    if (object.File !== undefined && object.File !== null) {
+      message.File = File.fromPartial(object.File)
+    } else {
+      message.File = undefined
+    }
+    return message
+  }
+}
+
+const baseQueryAllFileRequest: object = {}
+
+export const QueryAllFileRequest = {
+  encode(message: QueryAllFileRequest, writer: Writer = Writer.create()): Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim()
+    }
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryAllFileRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryAllFileRequest } as QueryAllFileRequest
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32())
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryAllFileRequest {
+    const message = { ...baseQueryAllFileRequest } as QueryAllFileRequest
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination)
+    } else {
+      message.pagination = undefined
+    }
+    return message
+  },
+
+  toJSON(message: QueryAllFileRequest): unknown {
+    const obj: any = {}
+    message.pagination !== undefined && (obj.pagination = message.pagination ? PageRequest.toJSON(message.pagination) : undefined)
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryAllFileRequest>): QueryAllFileRequest {
+    const message = { ...baseQueryAllFileRequest } as QueryAllFileRequest
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination)
+    } else {
+      message.pagination = undefined
+    }
+    return message
+  }
+}
+
+const baseQueryAllFileResponse: object = {}
+
+export const QueryAllFileResponse = {
+  encode(message: QueryAllFileResponse, writer: Writer = Writer.create()): Writer {
+    for (const v of message.File) {
+      File.encode(v!, writer.uint32(10).fork()).ldelim()
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(18).fork()).ldelim()
+    }
+    return writer
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryAllFileResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input
+    let end = length === undefined ? reader.len : reader.pos + length
+    const message = { ...baseQueryAllFileResponse } as QueryAllFileResponse
+    message.File = []
+    while (reader.pos < end) {
+      const tag = reader.uint32()
+      switch (tag >>> 3) {
+        case 1:
+          message.File.push(File.decode(reader, reader.uint32()))
+          break
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32())
+          break
+        default:
+          reader.skipType(tag & 7)
+          break
+      }
+    }
+    return message
+  },
+
+  fromJSON(object: any): QueryAllFileResponse {
+    const message = { ...baseQueryAllFileResponse } as QueryAllFileResponse
+    message.File = []
+    if (object.File !== undefined && object.File !== null) {
+      for (const e of object.File) {
+        message.File.push(File.fromJSON(e))
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination)
+    } else {
+      message.pagination = undefined
+    }
+    return message
+  },
+
+  toJSON(message: QueryAllFileResponse): unknown {
+    const obj: any = {}
+    if (message.File) {
+      obj.File = message.File.map((e) => (e ? File.toJSON(e) : undefined))
+    } else {
+      obj.File = []
+    }
+    message.pagination !== undefined && (obj.pagination = message.pagination ? PageResponse.toJSON(message.pagination) : undefined)
+    return obj
+  },
+
+  fromPartial(object: DeepPartial<QueryAllFileResponse>): QueryAllFileResponse {
+    const message = { ...baseQueryAllFileResponse } as QueryAllFileResponse
+    message.File = []
+    if (object.File !== undefined && object.File !== null) {
+      for (const e of object.File) {
+        message.File.push(File.fromPartial(e))
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination)
+    } else {
+      message.pagination = undefined
+    }
+    return message
+  }
 }
 
 const baseQueryGetDocumentsRequest: object = { id: 0 }
@@ -270,6 +532,10 @@ export const QueryAllDocumentsResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
+  /** Queries a file by id. */
+  File(request: QueryGetFileRequest): Promise<QueryGetFileResponse>
+  /** Queries a list of file items. */
+  FileAll(request: QueryAllFileRequest): Promise<QueryAllFileResponse>
   /** Queries a documents by id. */
   Documents(request: QueryGetDocumentsRequest): Promise<QueryGetDocumentsResponse>
   /** Queries a list of documents items. */
@@ -281,6 +547,18 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc
   }
+  File(request: QueryGetFileRequest): Promise<QueryGetFileResponse> {
+    const data = QueryGetFileRequest.encode(request).finish()
+    const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'File', data)
+    return promise.then((data) => QueryGetFileResponse.decode(new Reader(data)))
+  }
+
+  FileAll(request: QueryAllFileRequest): Promise<QueryAllFileResponse> {
+    const data = QueryAllFileRequest.encode(request).finish()
+    const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'FileAll', data)
+    return promise.then((data) => QueryAllFileResponse.decode(new Reader(data)))
+  }
+
   Documents(request: QueryGetDocumentsRequest): Promise<QueryGetDocumentsResponse> {
     const data = QueryGetDocumentsRequest.encode(request).finish()
     const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'Documents', data)

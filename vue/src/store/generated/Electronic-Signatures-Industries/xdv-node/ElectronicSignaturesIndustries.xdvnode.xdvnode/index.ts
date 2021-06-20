@@ -3,9 +3,10 @@ import { txClient, queryClient, MissingWalletError } from './module'
 import { SpVuexError } from '@starport/vuex'
 
 import { Documents } from "./module/types/xdvnode/documents"
+import { File } from "./module/types/xdvnode/file"
 
 
-export { Documents };
+export { Documents, File };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -43,11 +44,14 @@ function getStructure(template) {
 
 const getDefaultState = () => {
 	return {
+				File: {},
+				FileAll: {},
 				Documents: {},
 				DocumentsAll: {},
 				
 				_Structure: {
 						Documents: getStructure(Documents.fromPartial({})),
+						File: getStructure(File.fromPartial({})),
 						
 		},
 		_Subscriptions: new Set(),
@@ -75,6 +79,18 @@ export default {
 		}
 	},
 	getters: {
+				getFile: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.File[JSON.stringify(params)] ?? {}
+		},
+				getFileAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.FileAll[JSON.stringify(params)] ?? {}
+		},
 				getDocuments: (state) => (params = { params: {}}) => {
 					if (!(<any> params).query) {
 						(<any> params).query=null
@@ -122,6 +138,52 @@ export default {
 		 		
 		
 		
+		async QueryFile({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params: {...key}, query=null }) {
+			try {
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryFile( key.cid)).data
+				
+					
+				commit('QUERY', { query: 'File', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryFile', payload: { options: { all }, params: {...key},query }})
+				return getters['getFile']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new SpVuexError('QueryClient:QueryFile', 'API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryFileAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params: {...key}, query=null }) {
+			try {
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryFileAll(query)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.nextKey!=null) {
+					let next_values=(await queryClient.queryFileAll({...query, 'pagination.key':(<any> value).pagination.nextKey})).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'FileAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryFileAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getFileAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new SpVuexError('QueryClient:QueryFileAll', 'API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
 		async QueryDocuments({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params: {...key}, query=null }) {
 			try {
 				const queryClient=await initQueryClient(rootGetters)
@@ -163,6 +225,21 @@ export default {
 		},
 		
 		
+		async sendMsgCreateFile({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgCreateFile(value)
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new SpVuexError('TxClient:MsgCreateFile:Init', 'Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new SpVuexError('TxClient:MsgCreateFile:Send', 'Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		async sendMsgCreateDocuments({ rootGetters }, { value, fee = [], memo = '' }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
@@ -209,6 +286,20 @@ export default {
 			}
 		},
 		
+		async MsgCreateFile({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgCreateFile(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new SpVuexError('TxClient:MsgCreateFile:Init', 'Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new SpVuexError('TxClient:MsgCreateFile:Create', 'Could not create message: ' + e.message)
+					
+				}
+			}
+		},
 		async MsgCreateDocuments({ rootGetters }, { value }) {
 			try {
 				const txClient=await initTxClient(rootGetters)
