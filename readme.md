@@ -1,6 +1,22 @@
-# xdvnode
+# XDV Node
 
-**xdvnode** is a blockchain built using Cosmos SDK and Tendermint and created with [Starport](https://github.com/tendermint/starport).
+## A decentralized document anchoring, storage agnostic, is a blockchain built using Cosmos SDK and Tendermint and created with [Starport](https://github.com/tendermint/starport).
+nn 
+
+## Features / Roadmap
+
+- Document Anchoring
+- Files with IPLD API 
+- Support for XDV, IPFS, Swarm Storage
+- RSA Transaction validation / signing
+- "Smart Data Contracts": Code IPLD Schemas, merkle proof verifiable, which can be NFT tokenized, or any linked data format
+- Data Subscriptions: Subscribe IPLD Queries to oracles to execute jobs or actions
+- Supports DID and Verified Credentials
+- Use Cases: Smart card signing, NFT, Documents (anchored or tokenized), Decentralized Map Reduce, IPLD Smart Contracts, Electronic Invoices,
+Verified Credentials, Decentralized GDPR-like document management
+- XDV Token and IDAO Governance Token
+ 
+
 
 ## Get started
 
