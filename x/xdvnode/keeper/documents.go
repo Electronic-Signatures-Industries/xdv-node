@@ -89,9 +89,9 @@ func (k Keeper) AppendIPLD(
 	//   you just need a function that conforms to the ipld.BlockWriteOpener interface.
 	lsys.StorageWriteOpener = func(lnkCtx ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
 		// change prefix
-		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DocumentsKey))
 		buf := bytes.Buffer{}
 		return &buf, func(lnk ipld.Link) error {
+			store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix("xdvipld"))
 			store.Set([]byte(lnk.String()), buf.Bytes())
 			return nil
 		}, nil
@@ -99,9 +99,11 @@ func (k Keeper) AppendIPLD(
 
 	// Add Document
 	// Basic Node
-	n := fluent.MustBuildMap(basicnode.Prototype.Map, 1, func(na fluent.MapAssembler) {
+	n := fluent.MustBuildMap(basicnode.Prototype.Map, 2, func(na fluent.MapAssembler) {
 		appendedValue := k.cdc.MustMarshalJSON(&documents)
+
 		na.AssembleEntry("index").AssignBytes(appendedValue)
+		na.AssembleEntry("file").AssignBytes(appendedValue)
 	})
 
 	lp := cidlink.LinkPrototype{cid.Prefix{
@@ -119,6 +121,11 @@ func (k Keeper) AppendIPLD(
 	if err != nil {
 		panic(err)
 	}
+
+	documents.Hash = lnk.String()
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DocumentsKey))
+	appendedValue := k.cdc.MustMarshalBinaryBare(&documents)
+	store.Set(GetDocumentsIDBytes(documents.Id), appendedValue)
 
 	// Update documents count
 	k.SetDocumentsCount(ctx, count+1)
