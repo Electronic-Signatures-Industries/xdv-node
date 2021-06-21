@@ -1,11 +1,14 @@
 package keeper
 
 import (
+	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ipfs/go-cid"
+	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -30,7 +33,13 @@ func TestIPLD(t *testing.T) {
 	lnk, _ := keeper.AppendFile(ctx, f[0])
 	cid, _ := cid.Decode(lnk.String())
 
+	var buf bytes.Buffer
 	n := keeper.GetObject(ctx, cid)
+	if cid.Prefix().Codec == 0x71 {
+		// dag-cbor
+		dagcbor.Encode(n, &buf)
+		fmt.Println(buf.String())
+	}
 	assert.Equal(t, n.Length(), 1)
 }
 
