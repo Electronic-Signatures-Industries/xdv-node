@@ -7,6 +7,8 @@ import (
 	"io"
 	"strconv"
 
+	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
+
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,8 +21,8 @@ import (
 
 // GetFileCount get the total number of file
 func (k Keeper) GetFileCount(ctx sdk.Context) uint64 {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileCountKey))
-	byteKey := types.KeyPrefix(types.FileCountKey)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
+	byteKey := types.KeyPrefix(types.FileIPLDKey)
 	bz := store.Get(byteKey)
 
 	// Count doesn't exist: no element
@@ -40,8 +42,8 @@ func (k Keeper) GetFileCount(ctx sdk.Context) uint64 {
 
 // SetFileCount set the total number of file
 func (k Keeper) SetFileCount(ctx sdk.Context, count uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileCountKey))
-	byteKey := types.KeyPrefix(types.FileCountKey)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
+	byteKey := types.KeyPrefix(types.FileIPLDKey)
 	bz := []byte(strconv.FormatUint(count, 10))
 	store.Set(byteKey, bz)
 }
@@ -65,7 +67,7 @@ func (k Keeper) AppendFile(
 		// change prefix
 		buf := bytes.Buffer{}
 		return &buf, func(lnk ipld.Link) error {
-			store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix("xdvipld"))
+			store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
 			store.Set([]byte(lnk.String()), buf.Bytes())
 			return nil
 		}, nil
@@ -100,15 +102,15 @@ func (k Keeper) AppendFile(
 }
 
 // SetFile set a specific file in the store
-// func (k Keeper) SetFile(ctx sdk.Context, file types.File) {
-// 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileKey))
-// 	b := k.cdc.MustMarshalBinaryBare(&file)
-// 	store.Set(GetFileIDBytes(file.Id), b)
-// }
+func (k Keeper) SetFile(ctx sdk.Context, file types.File) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
+	b := k.cdc.MustMarshalBinaryBare(&file)
+	store.Set(GetFileIDBytes(file.Id), b)
+}
 
 // GetFile returns a file from its id
 func (k Keeper) GetFile(ctx sdk.Context, cid string) types.File {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix("xdvipld"))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
 	var file types.File
 	k.cdc.MustUnmarshalBinaryBare(store.Get([]byte(cid)), &file)
 	return file
@@ -130,7 +132,7 @@ func (k *Keeper) GetObject(ctx sdk.Context, cid cid.Cid) ipld.Node {
 	//  You can use any kind of storage system here;
 	//   you just need a function that conforms to the ipld.BlockReadOpener interface.
 	lsys.StorageReadOpener = func(lnkCtx ipld.LinkContext, lnk ipld.Link) (io.Reader, error) {
-		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix("xdvipld"))
+		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
 		data := store.Get([]byte(lnk.String()))
 		return bytes.NewReader(data), nil
 	}
@@ -174,26 +176,26 @@ func (k Keeper) GetFileOwner(ctx sdk.Context, cid string) string {
 }
 
 // RemoveFile removes a file from the store
-// func (k Keeper) RemoveFile(ctx sdk.Context, id uint64) {
-// 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileKey))
-// 	store.Delete(GetFileIDBytes(id))
-// }
+func (k Keeper) RemoveFile(ctx sdk.Context, id uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
+	store.Delete(GetFileIDBytes(id))
+}
 
-// // GetAllFile returns all file
-// func (k Keeper) GetAllFile(ctx sdk.Context) (list []types.File) {
-// 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileKey))
-// 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+// GetAllFile returns all file
+func (k Keeper) GetAllFile(ctx sdk.Context) (list []types.File) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
-// 	defer iterator.Close()
+	defer iterator.Close()
 
-// 	for ; iterator.Valid(); iterator.Next() {
-// 		var val types.File
-// 		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &val)
-// 		list = append(list, val)
-// 	}
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.File
+		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &val)
+		list = append(list, val)
+	}
 
-// 	return
-// }
+	return
+}
 
 // GetFileIDBytes returns the byte representation of the ID
 func GetFileIDBytes(id uint64) []byte {

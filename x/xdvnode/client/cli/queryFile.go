@@ -2,11 +2,11 @@ package cli
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
@@ -53,13 +53,13 @@ func CmdShowFile() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
+			cid, err := cast.ToStringE(args[0])
 			if err != nil {
 				return err
 			}
 
 			params := &types.QueryGetFileRequest{
-				Id: id,
+				Cid: cid,
 			}
 
 			res, err := queryClient.File(context.Background(), params)

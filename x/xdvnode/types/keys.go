@@ -31,6 +31,7 @@ const (
 )
 
 const (
+	FileIPLDKey  = "File-IPLD-"
 	FileKey      = "File-value-"
 	FileCountKey = "File-count-"
 )
