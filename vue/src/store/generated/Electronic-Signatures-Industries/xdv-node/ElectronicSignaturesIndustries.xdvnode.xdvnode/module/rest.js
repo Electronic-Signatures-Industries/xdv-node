@@ -169,21 +169,6 @@ export class Api extends HttpClient {
          * No description
          *
          * @tags Query
-         * @name QueryFileAll
-         * @summary Queries a list of file items.
-         * @request GET:/Electronic-Signatures-Industries/xdvnode/xdvnode/file
-         */
-        this.queryFileAll = (query, params = {}) => this.request({
-            path: `/Electronic-Signatures-Industries/xdvnode/xdvnode/file`,
-            method: "GET",
-            query: query,
-            format: "json",
-            ...params,
-        });
-        /**
-         * No description
-         *
-         * @tags Query
          * @name QueryFile
          * @summary Queries a file by id.
          * @request GET:/Electronic-Signatures-Industries/xdvnode/xdvnode/file/{cid}

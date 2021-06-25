@@ -534,8 +534,6 @@ export const QueryAllDocumentsResponse = {
 export interface Query {
   /** Queries a file by id. */
   File(request: QueryGetFileRequest): Promise<QueryGetFileResponse>
-  /** Queries a list of file items. */
-  FileAll(request: QueryAllFileRequest): Promise<QueryAllFileResponse>
   /** Queries a documents by id. */
   Documents(request: QueryGetDocumentsRequest): Promise<QueryGetDocumentsResponse>
   /** Queries a list of documents items. */
@@ -551,12 +549,6 @@ export class QueryClientImpl implements Query {
     const data = QueryGetFileRequest.encode(request).finish()
     const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'File', data)
     return promise.then((data) => QueryGetFileResponse.decode(new Reader(data)))
-  }
-
-  FileAll(request: QueryAllFileRequest): Promise<QueryAllFileResponse> {
-    const data = QueryAllFileRequest.encode(request).finish()
-    const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'FileAll', data)
-    return promise.then((data) => QueryAllFileResponse.decode(new Reader(data)))
   }
 
   Documents(request: QueryGetDocumentsRequest): Promise<QueryGetDocumentsResponse> {

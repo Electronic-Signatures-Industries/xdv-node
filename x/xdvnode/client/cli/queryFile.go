@@ -10,39 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdListFile() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "list-file",
-		Short: "list all file",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
-
-			queryClient := types.NewQueryClient(clientCtx)
-
-			params := &types.QueryAllFileRequest{
-				Pagination: pageReq,
-			}
-
-			res, err := queryClient.FileAll(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddPaginationFlagsToCmd(cmd, cmd.Use)
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
 func CmdShowFile() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-file [id]",

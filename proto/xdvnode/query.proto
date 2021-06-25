@@ -18,12 +18,6 @@ service Query {
 		option (google.api.http).get = "/Electronic-Signatures-Industries/xdvnode/xdvnode/file/{cid}";
 	}
 
-	// Queries a list of file items.
-	rpc FileAll(QueryAllFileRequest) returns (QueryAllFileResponse) {
-		option (google.api.http).get = "/Electronic-Signatures-Industries/xdvnode/xdvnode/file";
-	}
-
-
 	// Queries a documents by id.
 	rpc Documents(QueryGetDocumentsRequest) returns (QueryGetDocumentsResponse) {
 		option (google.api.http).get = "/Electronic-Signatures-Industries/xdvnode/xdvnode/documents/{id}";

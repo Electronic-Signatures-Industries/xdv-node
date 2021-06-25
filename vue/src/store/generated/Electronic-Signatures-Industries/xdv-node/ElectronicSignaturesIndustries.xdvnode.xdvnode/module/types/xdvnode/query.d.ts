@@ -90,8 +90,6 @@ export declare const QueryAllDocumentsResponse: {
 export interface Query {
     /** Queries a file by id. */
     File(request: QueryGetFileRequest): Promise<QueryGetFileResponse>;
-    /** Queries a list of file items. */
-    FileAll(request: QueryAllFileRequest): Promise<QueryAllFileResponse>;
     /** Queries a documents by id. */
     Documents(request: QueryGetDocumentsRequest): Promise<QueryGetDocumentsResponse>;
     /** Queries a list of documents items. */
@@ -101,7 +99,6 @@ export declare class QueryClientImpl implements Query {
     private readonly rpc;
     constructor(rpc: Rpc);
     File(request: QueryGetFileRequest): Promise<QueryGetFileResponse>;
-    FileAll(request: QueryAllFileRequest): Promise<QueryAllFileResponse>;
     Documents(request: QueryGetDocumentsRequest): Promise<QueryGetDocumentsResponse>;
     DocumentsAll(request: QueryAllDocumentsRequest): Promise<QueryAllDocumentsResponse>;
 }

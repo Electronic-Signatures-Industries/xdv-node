@@ -4,16 +4,16 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgCreateDocuments } from "./types/xdvnode/tx";
-import { MsgDeleteDocuments } from "./types/xdvnode/tx";
 import { MsgCreateFile } from "./types/xdvnode/tx";
+import { MsgDeleteDocuments } from "./types/xdvnode/tx";
+import { MsgCreateDocuments } from "./types/xdvnode/tx";
 import { MsgUpdateDocuments } from "./types/xdvnode/tx";
 
 
 const types = [
-  ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", MsgCreateDocuments],
-  ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgDeleteDocuments", MsgDeleteDocuments],
   ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateFile", MsgCreateFile],
+  ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgDeleteDocuments", MsgDeleteDocuments],
+  ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", MsgCreateDocuments],
   ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgUpdateDocuments", MsgUpdateDocuments],
   
 ];
@@ -43,9 +43,9 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgCreateDocuments: (data: MsgCreateDocuments): EncodeObject => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", value: data }),
-    msgDeleteDocuments: (data: MsgDeleteDocuments): EncodeObject => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgDeleteDocuments", value: data }),
     msgCreateFile: (data: MsgCreateFile): EncodeObject => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateFile", value: data }),
+    msgDeleteDocuments: (data: MsgDeleteDocuments): EncodeObject => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgDeleteDocuments", value: data }),
+    msgCreateDocuments: (data: MsgCreateDocuments): EncodeObject => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", value: data }),
     msgUpdateDocuments: (data: MsgUpdateDocuments): EncodeObject => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgUpdateDocuments", value: data }),
     
   };

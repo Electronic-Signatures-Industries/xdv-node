@@ -472,11 +472,6 @@ export class QueryClientImpl {
         const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'File', data);
         return promise.then((data) => QueryGetFileResponse.decode(new Reader(data)));
     }
-    FileAll(request) {
-        const data = QueryAllFileRequest.encode(request).finish();
-        const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'FileAll', data);
-        return promise.then((data) => QueryAllFileResponse.decode(new Reader(data)));
-    }
     Documents(request) {
         const data = QueryGetDocumentsRequest.encode(request).finish();
         const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Query', 'Documents', data);
