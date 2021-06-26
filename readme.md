@@ -73,3 +73,4 @@ The frontend app is built using the `@starport/vue` and `@starport/vuex` package
 
 - `Industrias DAO / DAO Industries` 2021
 - `Industrias de Firmas Electronicas SA` 2021
+- `Fernando Romero` 2021
