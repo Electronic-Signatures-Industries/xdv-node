@@ -80,9 +80,19 @@ Allows to configure access controls on data nodes and sources.
 An `insurance policy` is created with automated legal tech and is connected or integrated with the issuer of the policy.
 Insurance brokers or directly via website, sells policies to end users. They can get the policy by mail or in digital form. The issuer has decided to use public blockchains to be more transparent, and the broker has decide to use the issuer company REST API to start moving the previous centralized.
 
-To listen and execute next flow, the claim will require additionally integration wired...                                     
+To listen and execute next flow, the claim will require additionally integration linked to brokers, issuer (insurance), policy holders agents (VC agent) and other offchain data sources. 
+
+- `Claim` is filed thru decentralized automated legal tech (`broker`) and sent to insurance company.
+- `Policy` is verified by back office and updated in centralized solution. `Broker` has one of 5 trusted XDV Node with offchain worker connected to centralized API.
+- After XDV Nodes come to a consensus, an event  triggers  a `smart data contract` and orchestrate trusted data which then is computed and notified to subscribers
 
 #### EDI Orders and Invoicing
+
+A XDV Node network of 7 peers is setup to integrate EDI orders with offchain workers. The grocery consortium each one has different types of data structures, they are looking for:
+
+- Verify EDI orders signed with RSA
+- Convert them to electronic invoice and cloned to XDV Node XDV Storage and configure with RBAC/ACL
+- Push invoice to government tax office with government mandated signature using `smart data contracts`
 
 #### COVID-19 verifiable data warehousing
 
