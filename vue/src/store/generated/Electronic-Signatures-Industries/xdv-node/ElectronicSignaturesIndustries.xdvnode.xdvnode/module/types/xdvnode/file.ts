@@ -9,9 +9,10 @@ export interface File {
   id: number
   data: Uint8Array
   contentType: string
+  storageNetworkType: string
 }
 
-const baseFile: object = { creator: '', id: 0, contentType: '' }
+const baseFile: object = { creator: '', id: 0, contentType: '', storageNetworkType: '' }
 
 export const File = {
   encode(message: File, writer: Writer = Writer.create()): Writer {
@@ -26,6 +27,9 @@ export const File = {
     }
     if (message.contentType !== '') {
       writer.uint32(34).string(message.contentType)
+    }
+    if (message.storageNetworkType !== '') {
+      writer.uint32(42).string(message.storageNetworkType)
     }
     return writer
   },
@@ -48,6 +52,9 @@ export const File = {
           break
         case 4:
           message.contentType = reader.string()
+          break
+        case 5:
+          message.storageNetworkType = reader.string()
           break
         default:
           reader.skipType(tag & 7)
@@ -77,6 +84,11 @@ export const File = {
     } else {
       message.contentType = ''
     }
+    if (object.storageNetworkType !== undefined && object.storageNetworkType !== null) {
+      message.storageNetworkType = String(object.storageNetworkType)
+    } else {
+      message.storageNetworkType = ''
+    }
     return message
   },
 
@@ -86,6 +98,7 @@ export const File = {
     message.id !== undefined && (obj.id = message.id)
     message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()))
     message.contentType !== undefined && (obj.contentType = message.contentType)
+    message.storageNetworkType !== undefined && (obj.storageNetworkType = message.storageNetworkType)
     return obj
   },
 
@@ -110,6 +123,11 @@ export const File = {
       message.contentType = object.contentType
     } else {
       message.contentType = ''
+    }
+    if (object.storageNetworkType !== undefined && object.storageNetworkType !== null) {
+      message.storageNetworkType = object.storageNetworkType
+    } else {
+      message.storageNetworkType = ''
     }
     return message
   }

@@ -7,12 +7,18 @@ import (
 	"io"
 	"strconv"
 
+	// This package is needed so that all the preloaded plugins are loaded automatically
+
+	mh "github.com/multiformats/go-multihash"
+
+	icore "github.com/ipfs/interface-go-ipfs-core"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ipfs/go-cid"
+	opt "github.com/ipfs/interface-go-ipfs-core/options"
 	"github.com/ipld/go-ipld-prime"
 	"github.com/ipld/go-ipld-prime/fluent"
 	cidlink "github.com/ipld/go-ipld-prime/linking/cid"
@@ -60,6 +66,53 @@ func (k Keeper) AppendFile(
 	// Set the ID of the appended value
 	file.Id = count
 
+	var lnk ipld.Link
+	if file.GetStorageNetworkType() == "xdv" {
+		lnk = k.StoreAsXDV(ctx, file)
+	} else if file.GetStorageNetworkType() == "ipfs" {
+		lnk = k.StoreAsIPFS(ctx, file)
+	}
+
+	// Update documents count
+	k.SetFileCount(ctx, count+1)
+
+	return lnk, count
+}
+
+func (k Keeper) StoreAsIPFS(
+	ctx sdk.Context,
+	file types.File,
+) ipld.Link {
+	key := "ipfs"
+	c := ctx.Context()
+	ipfs := c.Value(key).(icore.CoreAPI)
+
+	lnk, err := ipfs.Block().Put(ctx.Context(), bytes.NewReader(file.GetData()),
+		opt.Block.Format("cbor"), opt.Block.Hash(mh.SHA2_256, -1))
+	if err != nil {
+		ctx.Logger().Info(err.Error())
+		return nil
+	}
+
+	// err = res.Emit(&BlockStat{
+	// 	Key:  p.Path().Cid().String(),
+	// 	Size: p.Size(),
+	// })
+
+	// lp := cidlink.LinkPrototype{cid.Prefix{
+	// 	Version:  1,
+	// 	Codec:    0x71, // dag-cbor
+	// 	MhType:   0x13, // sha2-512
+	// 	MhLength: 64,   // sha2-512 hash has a 64-byte sum.
+	// }}
+
+	return cidlink.Link{Cid: lnk.Path().Cid()}
+}
+
+func (k Keeper) StoreAsXDV(
+	ctx sdk.Context,
+	file types.File,
+) ipld.Link {
 	lsys := cidlink.DefaultLinkSystem()
 
 	//   you just need a function that conforms to the ipld.BlockWriteOpener interface.
@@ -94,11 +147,7 @@ func (k Keeper) AppendFile(
 	if err != nil {
 		panic(err)
 	}
-
-	// Update documents count
-	k.SetFileCount(ctx, count+1)
-
-	return lnk, count
+	return lnk
 }
 
 // SetFile set a specific file in the store

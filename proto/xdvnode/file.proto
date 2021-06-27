@@ -9,5 +9,6 @@ message File {
   string creator = 1;
   uint64 id = 2;
   bytes data = 3; 
-  string content_type = 4; 
+  string content_type = 4;
+  string storage_network_type = 5;
 }

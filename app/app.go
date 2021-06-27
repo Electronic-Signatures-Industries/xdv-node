@@ -84,13 +84,15 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
+	"strings"
+
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode"
 	xdvnodekeeper "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/keeper"
 	xdvnodetypes "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
-	"strings"
 )
 
 const Name = "xdv-node"
@@ -489,6 +491,9 @@ func New(
 	app.MountKVStores(keys)
 	app.MountTransientStores(tkeys)
 	app.MountMemoryStores(memKeys)
+
+	// initialize IPFS
+	xdvnodeModule.MountIPFS()
 
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)

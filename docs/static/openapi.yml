@@ -12959,6 +12959,8 @@ paths:
                     format: byte
                   contentType:
                     type: string
+                  storageNetworkType:
+                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -29003,6 +29005,8 @@ definitions:
         format: byte
       contentType:
         type: string
+      storageNetworkType:
+        type: string
   ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocumentsResponse:
     type: object
     properties:
@@ -29128,6 +29132,8 @@ definitions:
             type: string
             format: byte
           contentType:
+            type: string
+          storageNetworkType:
             type: string
   ibc.applications.transfer.v1.DenomTrace:
     type: object

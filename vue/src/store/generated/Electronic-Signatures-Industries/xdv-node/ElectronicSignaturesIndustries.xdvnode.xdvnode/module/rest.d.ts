@@ -83,6 +83,7 @@ export interface XdvnodeFile {
     /** @format byte */
     data?: string;
     contentType?: string;
+    storageNetworkType?: string;
 }
 export interface XdvnodeMsgCreateDocumentsResponse {
     /** @format uint64 */
