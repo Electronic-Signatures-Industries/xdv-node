@@ -3,7 +3,6 @@ package ElectronicSignaturesIndustries.xdvnode.xdvnode;
 
 option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types";
 
-import "gogoproto/gogo.proto";
 
 message File {
   string creator = 1;

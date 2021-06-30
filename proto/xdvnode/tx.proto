@@ -1,10 +1,6 @@
 syntax = "proto3";
 package ElectronicSignaturesIndustries.xdvnode.xdvnode;
 
-// this line is used by starport scaffolding # proto/tx/import
-import "xdvnode/file.proto";
-import "xdvnode/documents.proto";
-
 option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types";
 
 // Msg defines the Msg service.

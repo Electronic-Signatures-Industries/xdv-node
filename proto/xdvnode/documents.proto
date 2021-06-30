@@ -5,8 +5,6 @@ option go_package = "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvn
 
 
 
-import "gogoproto/gogo.proto";
-
 message Documents {
   string creator = 1;
   uint64 id = 2;
