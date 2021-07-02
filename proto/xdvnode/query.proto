@@ -2,7 +2,7 @@ syntax = "proto3";
 package ElectronicSignaturesIndustries.xdvnode.xdvnode;
 
 import "google/api/annotations.proto";
-import "cosmos/cosmos-sdk/proto/cosmos/base/query/v1beta1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 // this line is used by starport scaffolding # 1
 import "xdvnode/file.proto";
 import "xdvnode/documents.proto";
