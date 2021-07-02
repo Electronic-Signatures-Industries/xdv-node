@@ -1,14 +1,31 @@
-import { DirectSecp256k1HdWallet, Registry } from "@cosmjs/proto-signing";
-import { defaultRegistryTypes, SigningStargateClient } from "@cosmjs/stargate";
-import { MsgXxx } from "./path/to/generated/codec"; // Replace with your own Msg import
+import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing'
+import { defaultRegistryTypes, SigningStargateClient } from '@cosmjs/stargate'
+import { MsgCreateFile } from './protolib/xdvnode/tx' // Replace with your own Msg import
 
-import { Wallet } from 'xdv-universal-wallet-core'
+import { KeystoreDbModel, Wallet } from 'xdv-universal-wallet-core'
 
 export class XDVNodeProvider {
-  async createAccount(
-    accountName: string,
-    passphrase: string,
-  ) {
+  registry: Registry
+
+  /**
+   * Register Msg imports
+   */
+  constructor() {
+    this.registry = new Registry([
+      ...defaultRegistryTypes,
+      [
+        '/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateFile',
+        MsgCreateFile,
+      ],
+    ] as any)
+  }
+
+  /**
+   * Creates a wallet account
+   * @param accountName Account name
+   * @param passphrase Passphrase
+   */
+  async createAccount(accountName: string, passphrase: string) {
     const xdvWallet = new Wallet({ isWeb: true })
     await xdvWallet.open(accountName, passphrase)
     await xdvWallet.enrollAccount({
@@ -17,41 +34,97 @@ export class XDVNodeProvider {
     })
   }
 
-  async createWallet(accountName: string, passphrase: string){
+  /**
+   * Creates a wallet
+   * @param accountName Account name
+   * @param passphrase Passphrase
+   * @returns
+   */
+  async createWallet(accountName: string, passphrase: string) {
     const xdvWallet = new Wallet({ isWeb: true })
     await xdvWallet.open(accountName, passphrase)
-    return xdvWallet.addWallet()
-  }
 
-  async importWallet(accountName: string, passphrase: string, mnemonic: string){
-    const xdvWallet = new Wallet({ isWeb: true })
-    await xdvWallet.open(accountName, passphrase)
-    return xdvWallet.addWallet({
-      mnemonic
+    const acct = (await xdvWallet.getAccount()) as any
+    let walletId
+
+    if (acct.keystores.length === 0) {
+      //  TODO: Mnemonic must come from XDV Node Provider because it is using a custom chain
+      walletId = await xdvWallet.addWallet()
+    } else {
+      walletId = acct.keystores[0].walletId
+    }
+
+    const wallet = await xdvWallet.createEd25519({
+      passphrase: passphrase,
+      walletId: walletId,
     })
+
+    return wallet as any
   }
 
-  async createXDVProvider(){
-    
-    const myRegistry = new Registry([
-      ...defaultRegistryTypes,
-      ["/my.custom.MsgXxx", MsgXxx], // Replace with your own type URL and Msg class
-    ]);
-    const mnemonic = // Replace with your own mnemonic
-      "economy stock theory fatal elder harbor betray wasp final emotion task crumble siren bottom lizard educate guess current outdoor pair theory focus wife stone";
-    
-    // Inside an async function...
-    const signer = await DirectSecp256k1HdWallet.fromMnemonic(
+  /**
+   * Imports an existing seed phrase
+   * @param accountName Account name
+   * @param passphrase Passphrase
+   * @param mnemonic Seed phrase
+   * @returns
+   */
+  async importWallet(
+    accountName: string,
+    passphrase: string,
+    mnemonic: string,
+  ) {
+    const xdvWallet = new Wallet({ isWeb: true })
+    await xdvWallet.open(accountName, passphrase)
+
+    const acct = (await xdvWallet.getAccount()) as any
+
+    if (acct.keystores.length > 0) {
+      // already imported
+      return xdvWallet
+    }
+
+    const walletId = await xdvWallet.addWallet({
       mnemonic,
-      { prefix: "myprefix" }, // Replace with your own Bech32 address prefix
-    );
+    })
+
+    const wallet = await xdvWallet.createEd25519({
+      passphrase: passphrase,
+      walletId: walletId,
+    })
+
+    return wallet as any
+  }
+
+  async createXDVProvider(
+    accountName: string,
+    passphrase: string,
+  ) {
+    const xdvWallet = new Wallet({ isWeb: true })
+    await xdvWallet.open(accountName, passphrase)
+
+    const acct = (await xdvWallet.getAccount()) as any
+    let walletId = ''
+
+    if (acct.keystores.length === 0) {
+      //  TODO: Mnemonic must come from XDV Node Provider because it is using a custom chain
+      walletId = await xdvWallet.addWallet()
+    } else {
+      walletId = acct.keystores[0].walletId
+    }
+
+    const keystore = await acct.keystores.find((k: KeystoreDbModel) => k.walletId === walletId)
+
+    const signer = await DirectSecp256k1HdWallet.fromMnemonic(
+      keystore[0].mnemonic,
+      { prefix: 'xdv' },
+    )
     const client = await SigningStargateClient.connectWithSigner(
-      "my.endpoint.com", // Replace with your own RPC endpoint
+      'my.endpoint.com', // Replace with your own RPC endpoint
       signer,
       {
         registry: myRegistry,
       },
-    );
-    
+    )
   }
 }
