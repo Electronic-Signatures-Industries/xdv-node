@@ -1,5 +1,5 @@
 protoc \
-  --plugin="./node_modules/.bin/protoc-gen-ts_proto" \
+  --plugin="./provider/node_modules/.bin/protoc-gen-ts_proto" \
   --ts_proto_out="./provider/protolib" \
   --proto_path="./proto" \
   --proto_path="./proto/cosmos/cosmos-sdk/proto/cosmos/base/query/v1beta1" \
