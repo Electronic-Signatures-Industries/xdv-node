@@ -3,3 +3,4 @@ vue/dist
 secret.yml
 xdvd
 provider/node_modules
+.env

@@ -1,16 +1,21 @@
+require('dotenv').config()
+
 import { DirectSecp256k1HdWallet, Registry } from '@cosmjs/proto-signing'
-import { defaultRegistryTypes, SigningStargateClient } from '@cosmjs/stargate'
-import { MsgCreateFile } from './protolib/xdvnode/tx' // Replace with your own Msg import
+import { defaultRegistryTypes, SigningStargateClient, StargateClient } from '@cosmjs/stargate'
+import { MsgCreateFile,  MsgClientImpl } from './protolib/xdvnode/tx' // Replace with your own Msg import
 
 import { KeystoreDbModel, Wallet } from 'xdv-universal-wallet-core'
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
+import { txClient } from './genclient'
 
 export class XDVNodeProvider {
   registry: Registry
-
+  wallet: Wallet
   /**
    * Register Msg imports
    */
   constructor() {
+    this.wallet = new Wallet({ isWeb: false })
     this.registry = new Registry([
       ...defaultRegistryTypes,
       [
@@ -26,12 +31,11 @@ export class XDVNodeProvider {
    * @param passphrase Passphrase
    */
   async createAccount(accountName: string, passphrase: string) {
-    const xdvWallet = new Wallet({ isWeb: true })
-    await xdvWallet.open(accountName, passphrase)
-    await xdvWallet.enrollAccount({
-      passphrase,
+    await this.wallet.open(accountName, passphrase)
+    await this.wallet.enrollAccount({
       accountName,
     })
+
   }
 
   /**
@@ -41,20 +45,19 @@ export class XDVNodeProvider {
    * @returns
    */
   async createWallet(accountName: string, passphrase: string) {
-    const xdvWallet = new Wallet({ isWeb: true })
-    await xdvWallet.open(accountName, passphrase)
+    await this.wallet.open(accountName, passphrase)
 
-    const acct = (await xdvWallet.getAccount()) as any
+    const acct = (await this.wallet.getAccount()) as any
     let walletId
 
     if (acct.keystores.length === 0) {
       //  TODO: Mnemonic must come from XDV Node Provider because it is using a custom chain
-      walletId = await xdvWallet.addWallet()
+      walletId = await this.wallet.addWallet()
     } else {
       walletId = acct.keystores[0].walletId
     }
 
-    const wallet = await xdvWallet.createEd25519({
+    const wallet = await this.wallet.createEd25519({
       passphrase: passphrase,
       walletId: walletId,
     })
@@ -74,21 +77,20 @@ export class XDVNodeProvider {
     passphrase: string,
     mnemonic: string,
   ) {
-    const xdvWallet = new Wallet({ isWeb: true })
-    await xdvWallet.open(accountName, passphrase)
+    await this.wallet.open(accountName, passphrase)
 
-    const acct = (await xdvWallet.getAccount()) as any
+    const acct = (await this.wallet.getAccount()) as any
 
     if (acct.keystores.length > 0) {
       // already imported
-      return xdvWallet
+      return this.wallet
     }
 
-    const walletId = await xdvWallet.addWallet({
+    const walletId = await this.wallet.addWallet({
       mnemonic,
     })
 
-    const wallet = await xdvWallet.createEd25519({
+    const wallet = await this.wallet.createEd25519({
       passphrase: passphrase,
       walletId: walletId,
     })
@@ -96,35 +98,36 @@ export class XDVNodeProvider {
     return wallet as any
   }
 
-  async createXDVProvider(
-    accountName: string,
-    passphrase: string,
-  ) {
-    const xdvWallet = new Wallet({ isWeb: true })
-    await xdvWallet.open(accountName, passphrase)
-
-    const acct = (await xdvWallet.getAccount()) as any
+  async createXDVProvider(accountName: string, passphrase: string) {
+    const acct = (await this.wallet.getAccount()) as any
     let walletId = ''
-
     if (acct.keystores.length === 0) {
       //  TODO: Mnemonic must come from XDV Node Provider because it is using a custom chain
-      walletId = await xdvWallet.addWallet()
+      walletId = await this.wallet.addWallet({
+        mnemonic: process.env.ALICE_M,
+      })
     } else {
       walletId = acct.keystores[0].walletId
     }
 
-    const keystore = await acct.keystores.find((k: KeystoreDbModel) => k.walletId === walletId)
+    const keystore = await acct.keystores.find(
+      (k: KeystoreDbModel) => k.walletId === walletId,
+    )
 
+    console.log(keystore)
     const signer = await DirectSecp256k1HdWallet.fromMnemonic(
-      keystore[0].mnemonic,
+      keystore.mnemonic,
       { prefix: 'xdv' },
     )
-    const client = await SigningStargateClient.connectWithSigner(
-      'my.endpoint.com', // Replace with your own RPC endpoint
+    
+    const client = await txClient(
       signer,
-      {
-        registry: myRegistry,
-      },
     )
+
+//     const msg = await txClient.msgCreateFile(value)
+//     const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+// gas: "200000" }, memo})
+
+    return client
   }
 }

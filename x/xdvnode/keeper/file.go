@@ -67,10 +67,10 @@ func (k Keeper) AppendFile(
 	file.Id = count
 
 	var lnk ipld.Link
-	if file.GetStorageNetworkType() == "xdv" {
-		lnk = k.StoreAsXDV(ctx, file)
-	} else if file.GetStorageNetworkType() == "ipfs" {
+	if file.GetStorageNetworkType() == "ipfs" {
 		lnk = k.StoreAsIPFS(ctx, file)
+	} else {
+		lnk = k.StoreAsXDV(ctx, file)
 	}
 
 	// Update documents count
