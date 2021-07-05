@@ -400,6 +400,8 @@ func New(
 		appCodec,
 		keys[xdvnodetypes.StoreKey],
 		keys[xdvnodetypes.MemStoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
 	)
 	xdvnodeModule := xdvnode.NewAppModule(appCodec, app.XdvnodeKeeper)
 
