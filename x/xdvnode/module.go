@@ -182,6 +182,7 @@ func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Valid
 
 // MountIPFS
 func (am AppModule) MountIPFS() {
+
 	/// --- Part I: Getting a IPFS node running
 	fmt.Println("-- Getting an IPFS node running -- ")
 
