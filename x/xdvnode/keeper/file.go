@@ -189,11 +189,7 @@ func (k *Keeper) GetObject(ctx sdk.Context, cid cid.Cid) ipld.Node {
 	//  You can use any kind of storage system here;
 	//   you just need a function that conforms to the ipld.BlockReadOpener interface.
 	lsys.StorageReadOpener = func(lnkCtx ipld.LinkContext, lnk ipld.Link) (io.Reader, error) {
-		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
-		data := store.Get([]byte(lnk.String()))
-		var file types.File
-		k.cdc.MustUnmarshalBinaryBare(data, &file)
-
+		file := k.GetFile(ctx, lnk.String())
 		return bytes.NewReader(file.Data), nil
 	}
 
