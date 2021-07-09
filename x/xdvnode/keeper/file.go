@@ -3,7 +3,6 @@ package keeper
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"io"
 	"strconv"
 
@@ -121,7 +120,15 @@ func (k Keeper) StoreAsXDV(
 		buf := bytes.Buffer{}
 		return &buf, func(lnk ipld.Link) error {
 			store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
-			store.Set([]byte(lnk.String()), buf.Bytes())
+			f := types.File{
+				Data:               buf.Bytes(),
+				Creator:            file.Creator,
+				ContentType:        file.ContentType,
+				Id:                 file.Id,
+				StorageNetworkType: "xdv",
+			}
+			value := k.cdc.MustMarshalBinaryBare(&f)
+			store.Set([]byte(lnk.String()), value)
 			return nil
 		}, nil
 	}
@@ -147,6 +154,7 @@ func (k Keeper) StoreAsXDV(
 	if err != nil {
 		panic(err)
 	}
+	k.Logger(ctx).Info("ipld******************", lnk)
 	return lnk
 }
 
@@ -183,7 +191,10 @@ func (k *Keeper) GetObject(ctx sdk.Context, cid cid.Cid) ipld.Node {
 	lsys.StorageReadOpener = func(lnkCtx ipld.LinkContext, lnk ipld.Link) (io.Reader, error) {
 		store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
 		data := store.Get([]byte(lnk.String()))
-		return bytes.NewReader(data), nil
+		var file types.File
+		k.cdc.MustUnmarshalBinaryBare(data, &file)
+
+		return bytes.NewReader(file.Data), nil
 	}
 
 	// We'll need to decide what in-memory implementation of ipld.Node we want to use.
@@ -197,16 +208,20 @@ func (k *Keeper) GetObject(ctx sdk.Context, cid cid.Cid) ipld.Node {
 
 	// Apply the LinkSystem, and ask it to load our link!
 	n, err := lsys.Load(
-		ipld.LinkContext{}, // The zero value is fine.  Configure it it you want cancellability or other features.
-		lnk,                // The Link we want to load!
-		np,                 // The NodePrototype says what kind of Node we want as a result.
+		ipld.LinkContext{
+			Ctx: ctx.Context(),
+		}, // The zero value is fine.  Configure it it you want cancellability or other features.
+		lnk, // The Link we want to load!
+		np,  // The NodePrototype says what kind of Node we want as a result.
 	)
+
+	k.Logger(ctx).Error("we loaded a %s with %d entries\n", n.Kind(), n.Length())
+
 	if err != nil {
 		panic(err)
 	}
 
 	// Tada!  We have the data as node that we can traverse and use as desired.
-	fmt.Printf("we loaded a %s with %d entries\n", n.Kind(), n.Length())
 
 	// Output:
 	// we loaded a map with 1 entries

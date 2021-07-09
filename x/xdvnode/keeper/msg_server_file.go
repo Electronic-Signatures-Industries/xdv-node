@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	"github.com/ipfs/go-cid"
+
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -16,12 +18,13 @@ func (k msgServer) CreateFile(goCtx context.Context, msg *types.MsgCreateFile) (
 		ContentType: msg.ContentType,
 	}
 
-	cid, _ := k.AppendFile(
+	lnk, _ := k.AppendFile(
 		ctx,
 		file,
 	)
 
+	id, _ := cid.Decode(lnk.String())
 	return &types.MsgCreateFileResponse{
-		Cid: cid.String(),
+		Cid: id.String(),
 	}, nil
 }
