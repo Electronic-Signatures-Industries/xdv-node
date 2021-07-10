@@ -2,21 +2,7 @@
 import * as Long from 'long';
 import { util, configure, Writer, Reader } from 'protobufjs/minimal';
 export const protobufPackage = 'ElectronicSignaturesIndustries.xdvnode.xdvnode';
-const baseDocuments = {
-    creator: '',
-    id: 0,
-    name: '',
-    hash: '',
-    lastModified: 0,
-    contentType: '',
-    signature: '',
-    network: '',
-    did: '',
-    alg: '',
-    pinned: false,
-    tokenized: false,
-    metadataURI: ''
-};
+const baseDocuments = { creator: '', id: 0, name: '', hash: '', lastModified: 0, signature: '', did: '', metadataURI: '' };
 export const Documents = {
     encode(message, writer = Writer.create()) {
         if (message.creator !== '') {
@@ -34,29 +20,14 @@ export const Documents = {
         if (message.lastModified !== 0) {
             writer.uint32(40).uint64(message.lastModified);
         }
-        if (message.contentType !== '') {
-            writer.uint32(50).string(message.contentType);
-        }
         if (message.signature !== '') {
-            writer.uint32(58).string(message.signature);
-        }
-        if (message.network !== '') {
-            writer.uint32(66).string(message.network);
+            writer.uint32(50).string(message.signature);
         }
         if (message.did !== '') {
-            writer.uint32(74).string(message.did);
-        }
-        if (message.alg !== '') {
-            writer.uint32(82).string(message.alg);
-        }
-        if (message.pinned === true) {
-            writer.uint32(88).bool(message.pinned);
-        }
-        if (message.tokenized === true) {
-            writer.uint32(96).bool(message.tokenized);
+            writer.uint32(58).string(message.did);
         }
         if (message.metadataURI !== '') {
-            writer.uint32(106).string(message.metadataURI);
+            writer.uint32(66).string(message.metadataURI);
         }
         return writer;
     },
@@ -83,27 +54,12 @@ export const Documents = {
                     message.lastModified = longToNumber(reader.uint64());
                     break;
                 case 6:
-                    message.contentType = reader.string();
-                    break;
-                case 7:
                     message.signature = reader.string();
                     break;
-                case 8:
-                    message.network = reader.string();
-                    break;
-                case 9:
+                case 7:
                     message.did = reader.string();
                     break;
-                case 10:
-                    message.alg = reader.string();
-                    break;
-                case 11:
-                    message.pinned = reader.bool();
-                    break;
-                case 12:
-                    message.tokenized = reader.bool();
-                    break;
-                case 13:
+                case 8:
                     message.metadataURI = reader.string();
                     break;
                 default:
@@ -145,47 +101,17 @@ export const Documents = {
         else {
             message.lastModified = 0;
         }
-        if (object.contentType !== undefined && object.contentType !== null) {
-            message.contentType = String(object.contentType);
-        }
-        else {
-            message.contentType = '';
-        }
         if (object.signature !== undefined && object.signature !== null) {
             message.signature = String(object.signature);
         }
         else {
             message.signature = '';
         }
-        if (object.network !== undefined && object.network !== null) {
-            message.network = String(object.network);
-        }
-        else {
-            message.network = '';
-        }
         if (object.did !== undefined && object.did !== null) {
             message.did = String(object.did);
         }
         else {
             message.did = '';
-        }
-        if (object.alg !== undefined && object.alg !== null) {
-            message.alg = String(object.alg);
-        }
-        else {
-            message.alg = '';
-        }
-        if (object.pinned !== undefined && object.pinned !== null) {
-            message.pinned = Boolean(object.pinned);
-        }
-        else {
-            message.pinned = false;
-        }
-        if (object.tokenized !== undefined && object.tokenized !== null) {
-            message.tokenized = Boolean(object.tokenized);
-        }
-        else {
-            message.tokenized = false;
         }
         if (object.metadataURI !== undefined && object.metadataURI !== null) {
             message.metadataURI = String(object.metadataURI);
@@ -202,13 +128,8 @@ export const Documents = {
         message.name !== undefined && (obj.name = message.name);
         message.hash !== undefined && (obj.hash = message.hash);
         message.lastModified !== undefined && (obj.lastModified = message.lastModified);
-        message.contentType !== undefined && (obj.contentType = message.contentType);
         message.signature !== undefined && (obj.signature = message.signature);
-        message.network !== undefined && (obj.network = message.network);
         message.did !== undefined && (obj.did = message.did);
-        message.alg !== undefined && (obj.alg = message.alg);
-        message.pinned !== undefined && (obj.pinned = message.pinned);
-        message.tokenized !== undefined && (obj.tokenized = message.tokenized);
         message.metadataURI !== undefined && (obj.metadataURI = message.metadataURI);
         return obj;
     },
@@ -244,47 +165,17 @@ export const Documents = {
         else {
             message.lastModified = 0;
         }
-        if (object.contentType !== undefined && object.contentType !== null) {
-            message.contentType = object.contentType;
-        }
-        else {
-            message.contentType = '';
-        }
         if (object.signature !== undefined && object.signature !== null) {
             message.signature = object.signature;
         }
         else {
             message.signature = '';
         }
-        if (object.network !== undefined && object.network !== null) {
-            message.network = object.network;
-        }
-        else {
-            message.network = '';
-        }
         if (object.did !== undefined && object.did !== null) {
             message.did = object.did;
         }
         else {
             message.did = '';
-        }
-        if (object.alg !== undefined && object.alg !== null) {
-            message.alg = object.alg;
-        }
-        else {
-            message.alg = '';
-        }
-        if (object.pinned !== undefined && object.pinned !== null) {
-            message.pinned = object.pinned;
-        }
-        else {
-            message.pinned = false;
-        }
-        if (object.tokenized !== undefined && object.tokenized !== null) {
-            message.tokenized = object.tokenized;
-        }
-        else {
-            message.tokenized = false;
         }
         if (object.metadataURI !== undefined && object.metadataURI !== null) {
             message.metadataURI = object.metadataURI;

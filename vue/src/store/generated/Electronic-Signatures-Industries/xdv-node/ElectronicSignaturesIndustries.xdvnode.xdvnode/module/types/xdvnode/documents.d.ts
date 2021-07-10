@@ -6,13 +6,8 @@ export interface Documents {
     name: string;
     hash: string;
     lastModified: number;
-    contentType: string;
     signature: string;
-    network: string;
     did: string;
-    alg: string;
-    pinned: boolean;
-    tokenized: boolean;
     metadataURI: string;
 }
 export declare const Documents: {

@@ -67,13 +67,8 @@ export interface XdvnodeDocuments {
     hash?: string;
     /** @format uint64 */
     lastModified?: string;
-    contentType?: string;
     signature?: string;
-    network?: string;
     did?: string;
-    alg?: string;
-    pinned?: boolean;
-    tokenized?: boolean;
     metadataURI?: string;
 }
 export interface XdvnodeFile {
@@ -84,6 +79,7 @@ export interface XdvnodeFile {
     data?: string;
     contentType?: string;
     storageNetworkType?: string;
+    cid?: string;
 }
 export interface XdvnodeMsgCreateDocumentsResponse {
     /** @format uint64 */

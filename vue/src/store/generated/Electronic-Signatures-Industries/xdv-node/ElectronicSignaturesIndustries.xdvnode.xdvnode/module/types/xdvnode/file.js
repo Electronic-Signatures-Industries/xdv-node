@@ -2,7 +2,7 @@
 import * as Long from 'long';
 import { util, configure, Writer, Reader } from 'protobufjs/minimal';
 export const protobufPackage = 'ElectronicSignaturesIndustries.xdvnode.xdvnode';
-const baseFile = { creator: '', id: 0, contentType: '', storageNetworkType: '' };
+const baseFile = { creator: '', id: 0, contentType: '', storageNetworkType: '', cid: '' };
 export const File = {
     encode(message, writer = Writer.create()) {
         if (message.creator !== '') {
@@ -19,6 +19,9 @@ export const File = {
         }
         if (message.storageNetworkType !== '') {
             writer.uint32(42).string(message.storageNetworkType);
+        }
+        if (message.cid !== '') {
+            writer.uint32(50).string(message.cid);
         }
         return writer;
     },
@@ -43,6 +46,9 @@ export const File = {
                     break;
                 case 5:
                     message.storageNetworkType = reader.string();
+                    break;
+                case 6:
+                    message.cid = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -80,6 +86,12 @@ export const File = {
         else {
             message.storageNetworkType = '';
         }
+        if (object.cid !== undefined && object.cid !== null) {
+            message.cid = String(object.cid);
+        }
+        else {
+            message.cid = '';
+        }
         return message;
     },
     toJSON(message) {
@@ -89,6 +101,7 @@ export const File = {
         message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
         message.contentType !== undefined && (obj.contentType = message.contentType);
         message.storageNetworkType !== undefined && (obj.storageNetworkType = message.storageNetworkType);
+        message.cid !== undefined && (obj.cid = message.cid);
         return obj;
     },
     fromPartial(object) {
@@ -122,6 +135,12 @@ export const File = {
         }
         else {
             message.storageNetworkType = '';
+        }
+        if (object.cid !== undefined && object.cid !== null) {
+            message.cid = object.cid;
+        }
+        else {
+            message.cid = '';
         }
         return message;
     }

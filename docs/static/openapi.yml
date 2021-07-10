@@ -12755,20 +12755,10 @@ paths:
                     lastModified:
                       type: string
                       format: uint64
-                    contentType:
-                      type: string
                     signature:
-                      type: string
-                    network:
                       type: string
                     did:
                       type: string
-                    alg:
-                      type: string
-                    pinned:
-                      type: boolean
-                    tokenized:
-                      type: boolean
                     metadataURI:
                       type: string
               pagination:
@@ -12892,20 +12882,10 @@ paths:
                   lastModified:
                     type: string
                     format: uint64
-                  contentType:
-                    type: string
                   signature:
-                    type: string
-                  network:
                     type: string
                   did:
                     type: string
-                  alg:
-                    type: string
-                  pinned:
-                    type: boolean
-                  tokenized:
-                    type: boolean
                   metadataURI:
                     type: string
         default:
@@ -12960,6 +12940,8 @@ paths:
                   contentType:
                     type: string
                   storageNetworkType:
+                    type: string
+                  cid:
                     type: string
         default:
           description: An unexpected error response.
@@ -28976,20 +28958,10 @@ definitions:
       lastModified:
         type: string
         format: uint64
-      contentType:
-        type: string
       signature:
-        type: string
-      network:
         type: string
       did:
         type: string
-      alg:
-        type: string
-      pinned:
-        type: boolean
-      tokenized:
-        type: boolean
       metadataURI:
         type: string
   ElectronicSignaturesIndustries.xdvnode.xdvnode.File:
@@ -29006,6 +28978,8 @@ definitions:
       contentType:
         type: string
       storageNetworkType:
+        type: string
+      cid:
         type: string
   ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocumentsResponse:
     type: object
@@ -29042,20 +29016,10 @@ definitions:
             lastModified:
               type: string
               format: uint64
-            contentType:
-              type: string
             signature:
-              type: string
-            network:
               type: string
             did:
               type: string
-            alg:
-              type: string
-            pinned:
-              type: boolean
-            tokenized:
-              type: boolean
             metadataURI:
               type: string
       pagination:
@@ -29101,20 +29065,10 @@ definitions:
           lastModified:
             type: string
             format: uint64
-          contentType:
-            type: string
           signature:
-            type: string
-          network:
             type: string
           did:
             type: string
-          alg:
-            type: string
-          pinned:
-            type: boolean
-          tokenized:
-            type: boolean
           metadataURI:
             type: string
   ElectronicSignaturesIndustries.xdvnode.xdvnode.QueryGetFileResponse:
@@ -29134,6 +29088,8 @@ definitions:
           contentType:
             type: string
           storageNetworkType:
+            type: string
+          cid:
             type: string
   ibc.applications.transfer.v1.DenomTrace:
     type: object

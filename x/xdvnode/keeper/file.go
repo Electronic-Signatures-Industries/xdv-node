@@ -26,8 +26,8 @@ import (
 
 // GetFileCount get the total number of file
 func (k Keeper) GetFileCount(ctx sdk.Context) uint64 {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
-	byteKey := types.KeyPrefix(types.FileIPLDKey)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileCountKey))
+	byteKey := types.KeyPrefix(types.FileCountKey)
 	bz := store.Get(byteKey)
 
 	// Count doesn't exist: no element
@@ -47,8 +47,8 @@ func (k Keeper) GetFileCount(ctx sdk.Context) uint64 {
 
 // SetFileCount set the total number of file
 func (k Keeper) SetFileCount(ctx sdk.Context, count uint64) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
-	byteKey := types.KeyPrefix(types.FileIPLDKey)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileCountKey))
+	byteKey := types.KeyPrefix(types.FileCountKey)
 	bz := []byte(strconv.FormatUint(count, 10))
 	store.Set(byteKey, bz)
 }
@@ -125,10 +125,11 @@ func (k Keeper) StoreAsXDV(
 				Creator:            file.Creator,
 				ContentType:        file.ContentType,
 				Id:                 file.Id,
+				Cid:                lnk.String(),
 				StorageNetworkType: "xdv",
 			}
 			value := k.cdc.MustMarshalBinaryBare(&f)
-			store.Set([]byte(lnk.String()), value)
+			store.Set(GetFileCIDBytes(lnk.String()), value)
 			return nil
 		}, nil
 	}
@@ -136,7 +137,7 @@ func (k Keeper) StoreAsXDV(
 	// Add Document
 	// Basic Node
 	n := fluent.MustBuildMap(basicnode.Prototype.Map, 1, func(na fluent.MapAssembler) {
-		na.AssembleEntry("index").AssignBytes(file.GetData())
+		na.AssembleEntry("index").AssignBytes(file.Data)
 	})
 
 	lp := cidlink.LinkPrototype{cid.Prefix{
@@ -162,14 +163,14 @@ func (k Keeper) StoreAsXDV(
 func (k Keeper) SetFile(ctx sdk.Context, file types.File) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
 	b := k.cdc.MustMarshalBinaryBare(&file)
-	store.Set(GetFileIDBytes(file.Id), b)
+	store.Set(GetFileCIDBytes(file.Cid), b)
 }
 
 // GetFile returns a file from its id
 func (k Keeper) GetFile(ctx sdk.Context, cid string) types.File {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
 	var file types.File
-	k.cdc.MustUnmarshalBinaryBare(store.Get([]byte(cid)), &file)
+	k.cdc.MustUnmarshalBinaryBare(store.Get(GetFileCIDBytes(cid)), &file)
 	return file
 }
 
@@ -202,20 +203,41 @@ func (k *Keeper) GetObject(ctx sdk.Context, cid cid.Cid) ipld.Node {
 	//  There's a side-effecting import at the top of the file.  It's for the dag-cbor codec.
 	//  See the comments in ExampleStoringLink for more discussion of this and why it's important.
 
-	// Apply the LinkSystem, and ask it to load our link!
-	n, err := lsys.Load(
-		ipld.LinkContext{
-			Ctx: ctx.Context(),
-		}, // The zero value is fine.  Configure it it you want cancellability or other features.
-		lnk, // The Link we want to load!
-		np,  // The NodePrototype says what kind of Node we want as a result.
-	)
+	lsys.TrustedStorage = true
 
-	k.Logger(ctx).Error("we loaded a %s with %d entries\n", n.Kind(), n.Length())
-
+	// Choose all the parts.
+	decoder, err := lsys.DecoderChooser(lnk)
 	if err != nil {
-		panic(err)
+		ctx.Logger().Error("could not choose a decoder", err)
 	}
+	if lsys.StorageReadOpener == nil {
+		ctx.Logger().Error("no storage configured for reading", io.ErrClosedPipe)
+	}
+	// Open storage, read it, verify it, and feed the codec to assemble the nodes.
+	// TrustaedStorage indicates the data coming out of this reader has already been hashed and verified earlier.
+	// As a result, we can skip rehashing it
+	file := k.GetFile(ctx, lnk.String())
+	//	var n ipld.Node
+	nb := np.NewBuilder()
+	if lsys.TrustedStorage {
+		decoder(nb, bytes.NewReader(file.Data))
+	}
+	n := nb.Build()
+
+	// Apply the LinkSystem, and ask it to load our link!
+	// n, err := lsys.Load(
+	// 	ipld.LinkContext{
+	// 		Ctx: ctx.Context(),
+	// 	}, // The zero value is fine.  Configure it it you want cancellability or other features.
+	// 	lnk, // The Link we want to load!
+	// 	np,  // The NodePrototype says what kind of Node we want as a result.
+	// )
+
+	// k.Logger(ctx).Error("we loaded a %s with %d entries\n", n.Kind(), n.Length())
+
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// Tada!  We have the data as node that we can traverse and use as desired.
 
@@ -226,8 +248,8 @@ func (k *Keeper) GetObject(ctx sdk.Context, cid cid.Cid) ipld.Node {
 
 // HasFile checks if the file exists in the store
 func (k Keeper) HasFile(ctx sdk.Context, cid string) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix("xdvipld"))
-	return store.Has([]byte(cid))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
+	return store.Has(GetFileCIDBytes(cid))
 }
 
 // GetFileOwner returns the creator of the file
@@ -236,9 +258,9 @@ func (k Keeper) GetFileOwner(ctx sdk.Context, cid string) string {
 }
 
 // RemoveFile removes a file from the store
-func (k Keeper) RemoveFile(ctx sdk.Context, id uint64) {
+func (k Keeper) RemoveFile(ctx sdk.Context, cid string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
-	store.Delete(GetFileIDBytes(id))
+	store.Delete(GetFileCIDBytes(cid))
 }
 
 // GetAllFile returns all file
@@ -255,6 +277,12 @@ func (k Keeper) GetAllFile(ctx sdk.Context) (list []types.File) {
 	}
 
 	return
+}
+
+// GetFileCIDBytes returns the byte representation of the CID
+func GetFileCIDBytes(cid string) []byte {
+	bz := []byte(cid)
+	return bz
 }
 
 // GetFileIDBytes returns the byte representation of the ID

@@ -1,12 +1,16 @@
 package keeper
 
 import (
+	"bytes"
 	"context"
 
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/ipfs/go-cid"
+	"github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -47,11 +51,20 @@ func (k Keeper) File(c context.Context, req *types.QueryGetFileRequest) (*types.
 	var file types.File
 	ctx := sdk.UnwrapSDKContext(c)
 
-	// if !k.HasFile(ctx, req.Cid) {
-	// 	return nil, sdkerrors.ErrKeyNotFound
-	// }
+	if !k.HasFile(ctx, req.Cid) {
+		return nil, sdkerrors.ErrKeyNotFound
+	}
 
 	file = k.GetFile(ctx, req.Cid)
+	parsecid, _ := cid.Parse(req.Cid)
+	n := k.GetObject(ctx, parsecid)
+
+	var buf bytes.Buffer
+	if parsecid.Prefix().Codec == 0x71 {
+		// dag-cbor
+		dagcbor.Encode(n, &buf)
+		file.Data = buf.Bytes()
+	}
 
 	return &types.QueryGetFileResponse{File: &file}, nil
 }

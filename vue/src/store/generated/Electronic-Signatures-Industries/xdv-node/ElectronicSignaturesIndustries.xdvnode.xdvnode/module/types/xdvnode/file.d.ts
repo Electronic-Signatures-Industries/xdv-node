@@ -6,6 +6,7 @@ export interface File {
     data: Uint8Array;
     contentType: string;
     storageNetworkType: string;
+    cid: string;
 }
 export declare const File: {
     encode(message: File, writer?: Writer): Writer;

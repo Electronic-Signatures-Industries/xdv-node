@@ -10,4 +10,5 @@ message File {
   bytes data = 3; 
   string content_type = 4;
   string storage_network_type = 5;
+  string cid = 6;
 }
