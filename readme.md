@@ -68,6 +68,13 @@ The frontend app is built using the `@starport/vue` and `@starport/vuex` package
 - [Cosmos SDK Tutorials](https://tutorials.cosmos.network)
 - [Discord](https://discord.gg/W8trcGV)
 
+## Changelog
+
+#### 07/11/2021
+
+- File create / get as XDV IPLD done.
+- Added Iris NFT and Token module
+
 
 ## Contributors
 
