@@ -2,6 +2,143 @@
 import { Reader, util, configure, Writer } from 'protobufjs/minimal';
 import * as Long from 'long';
 export const protobufPackage = 'ElectronicSignaturesIndustries.xdvnode.xdvnode';
+const baseMsgPutBlock = { creator: '', contentType: '' };
+export const MsgPutBlock = {
+    encode(message, writer = Writer.create()) {
+        if (message.creator !== '') {
+            writer.uint32(10).string(message.creator);
+        }
+        if (message.data.length !== 0) {
+            writer.uint32(18).bytes(message.data);
+        }
+        if (message.contentType !== '') {
+            writer.uint32(26).string(message.contentType);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseMsgPutBlock };
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.creator = reader.string();
+                    break;
+                case 2:
+                    message.data = reader.bytes();
+                    break;
+                case 3:
+                    message.contentType = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseMsgPutBlock };
+        if (object.creator !== undefined && object.creator !== null) {
+            message.creator = String(object.creator);
+        }
+        else {
+            message.creator = '';
+        }
+        if (object.data !== undefined && object.data !== null) {
+            message.data = bytesFromBase64(object.data);
+        }
+        if (object.contentType !== undefined && object.contentType !== null) {
+            message.contentType = String(object.contentType);
+        }
+        else {
+            message.contentType = '';
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        message.creator !== undefined && (obj.creator = message.creator);
+        message.data !== undefined && (obj.data = base64FromBytes(message.data !== undefined ? message.data : new Uint8Array()));
+        message.contentType !== undefined && (obj.contentType = message.contentType);
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseMsgPutBlock };
+        if (object.creator !== undefined && object.creator !== null) {
+            message.creator = object.creator;
+        }
+        else {
+            message.creator = '';
+        }
+        if (object.data !== undefined && object.data !== null) {
+            message.data = object.data;
+        }
+        else {
+            message.data = new Uint8Array();
+        }
+        if (object.contentType !== undefined && object.contentType !== null) {
+            message.contentType = object.contentType;
+        }
+        else {
+            message.contentType = '';
+        }
+        return message;
+    }
+};
+const baseMsgPutBlockResponse = { cid: '' };
+export const MsgPutBlockResponse = {
+    encode(message, writer = Writer.create()) {
+        if (message.cid !== '') {
+            writer.uint32(10).string(message.cid);
+        }
+        return writer;
+    },
+    decode(input, length) {
+        const reader = input instanceof Uint8Array ? new Reader(input) : input;
+        let end = length === undefined ? reader.len : reader.pos + length;
+        const message = { ...baseMsgPutBlockResponse };
+        while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1:
+                    message.cid = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    },
+    fromJSON(object) {
+        const message = { ...baseMsgPutBlockResponse };
+        if (object.cid !== undefined && object.cid !== null) {
+            message.cid = String(object.cid);
+        }
+        else {
+            message.cid = '';
+        }
+        return message;
+    },
+    toJSON(message) {
+        const obj = {};
+        message.cid !== undefined && (obj.cid = message.cid);
+        return obj;
+    },
+    fromPartial(object) {
+        const message = { ...baseMsgPutBlockResponse };
+        if (object.cid !== undefined && object.cid !== null) {
+            message.cid = object.cid;
+        }
+        else {
+            message.cid = '';
+        }
+        return message;
+    }
+};
 const baseMsgCreateFile = { creator: '', contentType: '' };
 export const MsgCreateFile = {
     encode(message, writer = Writer.create()) {
@@ -689,6 +826,11 @@ export const MsgDeleteDocumentsResponse = {
 export class MsgClientImpl {
     constructor(rpc) {
         this.rpc = rpc;
+    }
+    PutBlock(request) {
+        const data = MsgPutBlock.encode(request).finish();
+        const promise = this.rpc.request('ElectronicSignaturesIndustries.xdvnode.xdvnode.Msg', 'PutBlock', data);
+        return promise.then((data) => MsgPutBlockResponse.decode(new Reader(data)));
     }
     CreateFile(request) {
         const data = MsgCreateFile.encode(request).finish();

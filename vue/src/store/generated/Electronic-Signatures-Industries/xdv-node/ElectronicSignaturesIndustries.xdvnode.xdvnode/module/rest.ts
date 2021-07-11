@@ -118,6 +118,10 @@ export interface XdvnodeMsgCreateFileResponse {
 
 export type XdvnodeMsgDeleteDocumentsResponse = object;
 
+export interface XdvnodeMsgPutBlockResponse {
+  cid?: string;
+}
+
 export type XdvnodeMsgUpdateDocumentsResponse = object;
 
 export interface XdvnodeQueryAllDocumentsResponse {

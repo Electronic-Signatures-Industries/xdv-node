@@ -1,5 +1,13 @@
 import { Reader, Writer } from 'protobufjs/minimal';
 export declare const protobufPackage = "ElectronicSignaturesIndustries.xdvnode.xdvnode";
+export interface MsgPutBlock {
+    creator: string;
+    data: Uint8Array;
+    contentType: string;
+}
+export interface MsgPutBlockResponse {
+    cid: string;
+}
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateFile {
     creator: string;
@@ -39,6 +47,20 @@ export interface MsgDeleteDocuments {
 }
 export interface MsgDeleteDocumentsResponse {
 }
+export declare const MsgPutBlock: {
+    encode(message: MsgPutBlock, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgPutBlock;
+    fromJSON(object: any): MsgPutBlock;
+    toJSON(message: MsgPutBlock): unknown;
+    fromPartial(object: DeepPartial<MsgPutBlock>): MsgPutBlock;
+};
+export declare const MsgPutBlockResponse: {
+    encode(message: MsgPutBlockResponse, writer?: Writer): Writer;
+    decode(input: Reader | Uint8Array, length?: number): MsgPutBlockResponse;
+    fromJSON(object: any): MsgPutBlockResponse;
+    toJSON(message: MsgPutBlockResponse): unknown;
+    fromPartial(object: DeepPartial<MsgPutBlockResponse>): MsgPutBlockResponse;
+};
 export declare const MsgCreateFile: {
     encode(message: MsgCreateFile, writer?: Writer): Writer;
     decode(input: Reader | Uint8Array, length?: number): MsgCreateFile;
@@ -98,6 +120,7 @@ export declare const MsgDeleteDocumentsResponse: {
 /** Msg defines the Msg service. */
 export interface Msg {
     /** this line is used by starport scaffolding # proto/tx/rpc */
+    PutBlock(request: MsgPutBlock): Promise<MsgPutBlockResponse>;
     CreateFile(request: MsgCreateFile): Promise<MsgCreateFileResponse>;
     CreateDocuments(request: MsgCreateDocuments): Promise<MsgCreateDocumentsResponse>;
     UpdateDocuments(request: MsgUpdateDocuments): Promise<MsgUpdateDocumentsResponse>;
@@ -106,6 +129,7 @@ export interface Msg {
 export declare class MsgClientImpl implements Msg {
     private readonly rpc;
     constructor(rpc: Rpc);
+    PutBlock(request: MsgPutBlock): Promise<MsgPutBlockResponse>;
     CreateFile(request: MsgCreateFile): Promise<MsgCreateFileResponse>;
     CreateDocuments(request: MsgCreateDocuments): Promise<MsgCreateDocumentsResponse>;
     UpdateDocuments(request: MsgUpdateDocuments): Promise<MsgUpdateDocumentsResponse>;

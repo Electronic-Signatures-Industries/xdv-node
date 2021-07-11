@@ -4,13 +4,15 @@ import { Registry } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
 import { MsgUpdateDocuments } from "./types/xdvnode/tx";
 import { MsgDeleteDocuments } from "./types/xdvnode/tx";
-import { MsgCreateDocuments } from "./types/xdvnode/tx";
+import { MsgPutBlock } from "./types/xdvnode/tx";
 import { MsgCreateFile } from "./types/xdvnode/tx";
+import { MsgCreateDocuments } from "./types/xdvnode/tx";
 const types = [
     ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgUpdateDocuments", MsgUpdateDocuments],
     ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgDeleteDocuments", MsgDeleteDocuments],
-    ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", MsgCreateDocuments],
+    ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgPutBlock", MsgPutBlock],
     ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateFile", MsgCreateFile],
+    ["/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", MsgCreateDocuments],
 ];
 export const MissingWalletError = new Error("wallet is required");
 const registry = new Registry(types);
@@ -27,8 +29,9 @@ const txClient = async (wallet, { addr: addr } = { addr: "http://localhost:26657
         signAndBroadcast: (msgs, { fee, memo } = { fee: defaultFee, memo: "" }) => client.signAndBroadcast(address, msgs, fee, memo),
         msgUpdateDocuments: (data) => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgUpdateDocuments", value: data }),
         msgDeleteDocuments: (data) => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgDeleteDocuments", value: data }),
-        msgCreateDocuments: (data) => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", value: data }),
+        msgPutBlock: (data) => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgPutBlock", value: data }),
         msgCreateFile: (data) => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateFile", value: data }),
+        msgCreateDocuments: (data) => ({ typeUrl: "/ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgCreateDocuments", value: data }),
     };
 };
 const queryClient = async ({ addr: addr } = { addr: "http://localhost:1317" }) => {

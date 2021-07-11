@@ -33366,6 +33366,11 @@ definitions:
         type: string
   ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgDeleteDocumentsResponse:
     type: object
+  ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgPutBlockResponse:
+    type: object
+    properties:
+      cid:
+        type: string
   ElectronicSignaturesIndustries.xdvnode.xdvnode.MsgUpdateDocumentsResponse:
     type: object
   ElectronicSignaturesIndustries.xdvnode.xdvnode.QueryAllDocumentsResponse:
