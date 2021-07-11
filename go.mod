@@ -15,6 +15,7 @@ require (
 	github.com/ipfs/go-ipfs-config v0.14.0
 	github.com/ipfs/interface-go-ipfs-core v0.4.0
 	github.com/ipld/go-ipld-prime v0.10.0
+	github.com/irisnet/irismod v1.4.0
 	github.com/libp2p/go-libp2p-core v0.8.5
 	github.com/libp2p/go-libp2p-peerstore v0.2.7
 	github.com/multiformats/go-multiaddr v0.3.2
@@ -27,6 +28,7 @@ require (
 	github.com/tendermint/spm v0.0.0-20210524110815-6d7452d2dc4a
 	github.com/tendermint/tendermint v0.34.10
 	github.com/tendermint/tm-db v0.6.4
+	github.com/tidwall/gjson v1.8.1
 	google.golang.org/genproto v0.0.0-20210617175327-b9e0b3197ced
 	google.golang.org/grpc v1.38.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect

@@ -90,6 +90,10 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
+	"github.com/Electronic-Signatures-Industries/xdv-node/x/nft"
+	nftkeeper "github.com/irisnet/irismod/modules/nft/keeper"
+	nfttypes "github.com/irisnet/irismod/modules/nft/types"
+
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode"
 	xdvnodekeeper "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/keeper"
 	xdvnodetypes "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/types"
@@ -164,6 +168,7 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		nft.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		wasm.AppModuleBasic{},
 		xdvnode.AppModuleBasic{},
@@ -237,6 +242,7 @@ type App struct {
 	scopedWasmKeeper capabilitykeeper.ScopedKeeper
 
 	XdvnodeKeeper xdvnodekeeper.Keeper
+	NFTKeeper     nftkeeper.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -269,6 +275,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		wasm.StoreKey,
 		xdvnodetypes.StoreKey,
+		nfttypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -331,6 +338,7 @@ func New(
 	)
 
 	// ... other modules keepers
+	app.NFTKeeper = nftkeeper.NewKeeper(appCodec, keys[nfttypes.StoreKey])
 
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
@@ -430,6 +438,7 @@ func New(
 			app.AccountKeeper, app.StakingKeeper, app.BaseApp.DeliverTx,
 			encodingConfig.TxConfig,
 		),
+		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
