@@ -70,6 +70,12 @@ The frontend app is built using the `@starport/vue` and `@starport/vuex` package
 
 ## Changelog
 
+#### 07/12/2021
+
+- dagJWS JWT init verification code.
+- Added Iris Record module
+
+
 #### 07/11/2021
 
 - File create / get as XDV IPLD done.

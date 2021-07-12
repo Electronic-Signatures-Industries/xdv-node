@@ -90,9 +90,16 @@ import (
 
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmclient "github.com/CosmWasm/wasmd/x/wasm/client"
-	"github.com/Electronic-Signatures-Industries/xdv-node/x/nft"
+	"github.com/irisnet/irismod/modules/nft"
 	nftkeeper "github.com/irisnet/irismod/modules/nft/keeper"
 	nfttypes "github.com/irisnet/irismod/modules/nft/types"
+	"github.com/irisnet/irismod/modules/record"
+
+	recordkeeper "github.com/irisnet/irismod/modules/record/keeper"
+	recordtypes "github.com/irisnet/irismod/modules/record/types"
+	"github.com/irisnet/irismod/modules/token"
+	tokenkeeper "github.com/irisnet/irismod/modules/token/keeper"
+	tokentypes "github.com/irisnet/irismod/modules/token/types"
 
 	"github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode"
 	xdvnodekeeper "github.com/Electronic-Signatures-Industries/xdv-node/x/xdvnode/keeper"
@@ -169,6 +176,10 @@ var (
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		nft.AppModuleBasic{},
+		token.AppModuleBasic{},
+		record.AppModuleBasic{},
+		nft.AppModuleBasic{},
+
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 		wasm.AppModuleBasic{},
 		xdvnode.AppModuleBasic{},
@@ -178,6 +189,7 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
+		tokentypes.ModuleName:          {authtypes.Minter, authtypes.Burner},
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
@@ -218,6 +230,8 @@ type App struct {
 	memKeys map[string]*sdk.MemoryStoreKey
 
 	// keepers
+	TokenKeeper      tokenkeeper.Keeper
+	RecordKeeper     recordkeeper.Keeper
 	AccountKeeper    authkeeper.AccountKeeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
@@ -275,6 +289,9 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/storeKey
 		wasm.StoreKey,
 		xdvnodetypes.StoreKey,
+		recordtypes.StoreKey,
+
+		tokentypes.StoreKey,
 		nfttypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -337,13 +354,22 @@ func New(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
+	app.TokenKeeper = tokenkeeper.NewKeeper(
+		appCodec,
+		keys[tokentypes.StoreKey],
+		app.GetSubspace(tokentypes.ModuleName),
+		app.BankKeeper,
+		app.ModuleAccountAddrs(),
+		authtypes.FeeCollectorName,
+	)
+	app.RecordKeeper = recordkeeper.NewKeeper(appCodec, keys[recordtypes.StoreKey])
+
 	// ... other modules keepers
 	app.NFTKeeper = nftkeeper.NewKeeper(appCodec, keys[nfttypes.StoreKey])
 
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
-		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, scopedIBCKeeper,
-	)
+		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, scopedIBCKeeper)
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
@@ -438,6 +464,9 @@ func New(
 			app.AccountKeeper, app.StakingKeeper, app.BaseApp.DeliverTx,
 			encodingConfig.TxConfig,
 		),
+		token.NewAppModule(appCodec, app.TokenKeeper, app.AccountKeeper, app.BankKeeper),
+		record.NewAppModule(appCodec, app.RecordKeeper, app.AccountKeeper, app.BankKeeper),
+		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper),
 		nft.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper),
 		auth.NewAppModule(appCodec, app.AccountKeeper, nil),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
@@ -489,6 +518,9 @@ func New(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
+		nfttypes.ModuleName,
+		tokentypes.ModuleName,
+		recordtypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 		wasm.ModuleName,
 		xdvnodetypes.ModuleName,
@@ -671,6 +703,9 @@ func GetMaccPerms() map[string][]string {
 // initParamsKeeper init params keeper and its subspaces
 func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key, tkey sdk.StoreKey) paramskeeper.Keeper {
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
+
+	paramsKeeper.Subspace(tokentypes.ModuleName)
+	paramsKeeper.Subspace(recordtypes.ModuleName)
 
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
