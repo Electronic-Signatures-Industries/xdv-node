@@ -38,7 +38,7 @@ func (k msgServer) PutBlock(goCtx context.Context, msg *types.MsgPutBlock) (*typ
 		ContentType: msg.ContentType,
 	}
 
-	lnk, _ := k.AppendFile(
+	lnk, _ := k.AppendFileBlock(
 		ctx,
 		file,
 	)

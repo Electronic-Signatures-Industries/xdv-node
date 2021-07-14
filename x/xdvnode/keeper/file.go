@@ -3,6 +3,7 @@ package keeper
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/json"
 	"io"
 	"strconv"
 
@@ -78,6 +79,27 @@ func (k Keeper) AppendFile(
 	return lnk, count
 }
 
+// AppendFile appends a file in the store with a new id and update the count
+func (k Keeper) AppendFileBlock(
+	ctx sdk.Context,
+	file types.File,
+) (ipld.Link, uint64) {
+
+	// Create the file
+	count := k.GetFileCount(ctx)
+
+	// Set the ID of the appended value
+	file.Id = count
+
+	var lnk ipld.Link
+	lnk = k.StoreAsXDVBlock(ctx, file)
+
+	// Update documents count
+	k.SetFileCount(ctx, count+1)
+
+	return lnk, count
+}
+
 func (k Keeper) StoreAsIPFS(
 	ctx sdk.Context,
 	file types.File,
@@ -108,6 +130,78 @@ func (k Keeper) StoreAsIPFS(
 	return cidlink.Link{Cid: lnk.Path().Cid()}
 }
 
+// StoreAsXDVBlock
+func (k Keeper) StoreAsXDVBlock(
+	ctx sdk.Context,
+	file types.File,
+) ipld.Link {
+	lsys := cidlink.DefaultLinkSystem()
+
+	//   you just need a function that conforms to the ipld.BlockWriteOpener interface.
+	lsys.StorageWriteOpener = func(lnkCtx ipld.LinkContext) (io.Writer, ipld.BlockWriteCommitter, error) {
+		// change prefix
+		buf := bytes.Buffer{}
+		return &buf, func(lnk ipld.Link) error {
+			store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FileIPLDKey))
+			f := types.File{
+				Data:               buf.Bytes(),
+				Creator:            file.Creator,
+				ContentType:        file.ContentType,
+				Id:                 file.Id,
+				Cid:                lnk.String(),
+				StorageNetworkType: "xdv",
+			}
+			value := k.cdc.MustMarshalBinaryBare(&f)
+			store.Set(GetFileCIDBytes(lnk.String()), value)
+			return nil
+		}, nil
+	}
+
+	// Add Document
+	// {
+	// 	link: 'bafyreib77wpm5tvgkbr4t4aiiopjyispw76h2trd5yvpzmq6cejdjhcsie',
+	// 	payload: 'AXESID_9ns7OplBjyfAIQ56cIk-3_H1OI-4q_LIeERI0nFJB',
+	// 	signatures: [
+	// 	  {
+	// 		protected: 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImRpZDprZXk6ekFIZDdoQ1dXcjgxUlZIZkxYMkNaRFladGNDR2lMQXc5czdyRzRWdjhlQ3g4RERkZiN6QUhkN2hDV1dyODFSVkhmTFgyQ1pEWVp0Y0NHaUxBdzlzN3JHNFZ2OGVDeDhERGRmIn0',
+	// 		signature: 'NiQ236iEKLjkJ7zqU4u1GIqsnV0fj9XU3fp8th8lLqCRstn-UtiL-CZE4-WQBPm_N_brRqyCdTiqRcMp3wAybve8MRFzY1d8DEnD8iyxY_ZJOeLr_d9hSKDqLCX80uuxjPk89MExrK19pC36k44kAO1wIYBwCn8iiiIHtkPrYnebJ1iWS5JTd_ZaHMitZ99QCNpmQG3-1BSNXucERr61Mn9VrLgwpQNlCfC_m_QXCsKYhgTo020fDK0aHuAgmMAGKW-s9F9BA-PGvNike_S3KjKiy0dmcWi-J07N7d5hgYXh8l0RChwz_yLFO8o6k0EgEZbFTZdLqeuYM6VHoGWpDQ'
+	// 	  }
+	// 	]
+	//   }
+	var dat map[string]interface{}
+	json.Unmarshal([]byte(file.Data), &dat)
+	//	cidlink1, err := cid.Parse(dat["link"].(string))
+	//	s := cidlink1.Hash().B58String()
+
+	// Basic Node
+	n := fluent.MustBuildMap(basicnode.Prototype.Map, 3, func(na fluent.MapAssembler) {
+		na.AssembleEntry("link").AssignString(dat["link"].(string))
+
+		na.AssembleEntry("payload").AssignString(dat["payload"].(string))
+		na.AssembleEntry("signatures").CreateMap(2, func(na2 fluent.MapAssembler) {
+			//  na2.AssembleEntry("protected").AssignString()
+		})
+	})
+
+	lp := cidlink.LinkPrototype{cid.Prefix{
+		Version:  1,
+		Codec:    0x71, // dag-cbor
+		MhType:   0x13, // sha2-512
+		MhLength: 64,   // sha2-512 hash has a 64-byte sum.
+	}}
+
+	lnk, err := lsys.Store(
+		ipld.LinkContext{}, // The zero value is fine.  Configure it it you want cancellability or other features.
+		lp,                 // The LinkPrototype says what codec and hashing to use.
+		n,                  // And here's our data.
+	)
+	if err != nil {
+		panic(err)
+	}
+	return lnk
+}
+
+// StoreAsXDV
 func (k Keeper) StoreAsXDV(
 	ctx sdk.Context,
 	file types.File,
