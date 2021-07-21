@@ -1,5 +1,7 @@
 # XDV Node
 
+## DEPRECATED: XDV Protocol SecretWasm Smart Contracts and XDV Node L2 are the new implementations.
+
 ## A decentralized document anchoring, storage agnostic
 ### is a blockchain built using Cosmos SDK and Tendermint and created with [Starport](https://github.com/tendermint/starport).
 
